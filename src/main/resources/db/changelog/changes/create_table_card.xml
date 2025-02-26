@@ -1,0 +1,37 @@
+<databaseChangeLog>
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="create_table_card" author="Ekaterina Panova">
+    <preConditions onFail="MARK_RAN">
+        <not>
+        <tableExists tableName="card"/>
+        </not>
+    </preConditions>
+    <createTable tableName="deposit">
+        <column name="card_id" type="bigserial" autoIncrement="true">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="card_number" type="varchar(16)">
+            <constraints nullable="false" unique="true"/>
+        </column>
+        <column name="expiration_date" type="date">
+            <constraints nullable="false"/>
+        </column>
+        <column name="cvv" type="varchar(3)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="card_type" type="varchar(20)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="status" type="varchar(20)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="account_id" type="bigint">
+            <constraints nullable="false" foreignKeyName="card_account" references="accounts(id)"/>
+        </column>
+    </createTable>
+    </changeSet>
+</databaseChangeLog>
