@@ -1,10 +1,10 @@
-package ru.itgirls.bank_system.model;
+package com.itgirls.bank_system.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import ru.itgirls.bank_system.security.Role;
+import com.itgirls.bank_system.security.Role;
 
 @Entity
 @Table(name = "\"user\"")
