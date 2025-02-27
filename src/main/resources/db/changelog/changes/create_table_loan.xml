@@ -1,0 +1,40 @@
+<databaseChangeLog>
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_table_loan" author="Marina Bondareva">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="loan"/>
+            </not>
+        </preConditions>
+        <createTable tableName="loan">
+            <column name="loan_id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="amount_loan" type="decimal(15,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_loan" type="decimal(5,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date_loan" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date_loan" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="monthly_payment_loan" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_loan" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="bigint" unique="true">
+                <constraints nullable="false" foreignKeyName="loan_account" references="account(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
