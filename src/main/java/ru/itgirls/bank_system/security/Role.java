@@ -1,4 +1,4 @@
-package ru.it_girls.bank_system.security;
+package ru.itgirls.bank_system.security;
 
 public enum Role {
     ADMIN,
