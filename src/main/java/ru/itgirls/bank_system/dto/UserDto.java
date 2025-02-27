@@ -20,9 +20,9 @@ public class UserDto {
 
     private String email;
 
-    private String firstName;
+    private String name;
 
-    private String lastName;
+    private String surname;
 
     private Role role;
 
