@@ -21,11 +21,11 @@ public class User {
 
     @NotBlank
     @Column(name = "name", nullable = false)
-    private String firstName;
+    private String name;
 
     @NotBlank
     @Column(name = "surname", nullable = false)
-    private String lastName;
+    private String surname;
 
     @Email
     @NotBlank
