@@ -1,8 +1,9 @@
-<databaseChangeLog>
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create_table_deposit" author="Ekaterina Panova">
     <preConditions onFail="MARK_RAN">
@@ -11,25 +12,25 @@
         </not>
     </preConditions>
     <createTable tableName="deposit">
-        <column name="deposit_id" type="bigserial" autoIncrement="true">
+        <column name="id" type="bigserial" autoIncrement="true">
             <constraints primaryKey="true" nullable="false"/>
         </column>
-        <column name="amount" type="decimal(15,2)">
+        <column name="amount_deposit" type="decimal(15,2)">
             <constraints nullable="false"/>
         </column>
-        <column name="interest_rate" type="decimal(5,2)">
+        <column name="interest_rate_deposit" type="decimal(5,2)">
             <constraints nullable="false"/>
         </column>
-        <column name="start_date" type="date">
+        <column name="start_date_deposit" type="date">
             <constraints nullable="false"/>
         </column>
-        <column name="end_date" type="date">
+        <column name="end_date_deposit" type="date">
             <constraints nullable="false"/>
         </column>
-        <column name="status" type="varchar(20)">
+        <column name="status_deposit" type="varchar(20)">
             <constraints nullable="false"/>
         </column>
-        <column name="account_id" type="bigint" unique="true">
+        <column name="account_id" type="bigint">
             <constraints nullable="false" foreignKeyName="deposit_account" references="account(id)"/>
         </column>
     </createTable>
