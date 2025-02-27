@@ -20,11 +20,11 @@ public class User {
     private Long id;
 
     @NotBlank
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String firstName;
 
     @NotBlank
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "surname", nullable = false)
     private String lastName;
 
     @Email
