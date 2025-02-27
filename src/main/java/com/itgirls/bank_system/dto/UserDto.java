@@ -1,4 +1,4 @@
-package ru.itgirls.bank_system.dto;
+package com.itgirls.bank_system.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.itgirls.bank_system.security.Role;
+import com.itgirls.bank_system.security.Role;
 
 @Data
 @Builder
