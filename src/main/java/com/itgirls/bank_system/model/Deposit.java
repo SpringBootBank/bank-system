@@ -1,4 +1,4 @@
-package com.itgirls.bank_system.entity;
+package com.itgirls.bank_system.model;
 
 import com.itgirls.bank_system.enums.DepositStatus;
 import jakarta.persistence.*;
