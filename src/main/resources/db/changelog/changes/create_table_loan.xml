@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
+<databaseChangeLog>
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
@@ -33,7 +32,7 @@
             <column name="status_loan" type="varchar(20)">
                 <constraints nullable="false"/>
             </column>
-            <column name="account_id" type="bigint">
+            <column name="account_id" type="bigint" unique="true">
                 <constraints nullable="false" foreignKeyName="loan_account" references="account(id)"/>
             </column>
         </createTable>

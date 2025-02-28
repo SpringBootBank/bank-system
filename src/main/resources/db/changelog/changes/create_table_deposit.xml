@@ -1,4 +1,4 @@
-<databaseChangeLog
+<databaseChangeLog>
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
@@ -29,7 +29,7 @@
         <column name="status" type="varchar(20)">
             <constraints nullable="false"/>
         </column>
-        <column name="account_id" type="bigint">
+        <column name="account_id" type="bigint" unique="true">
             <constraints nullable="false" foreignKeyName="deposit_account" references="account(id)"/>
         </column>
     </createTable>
