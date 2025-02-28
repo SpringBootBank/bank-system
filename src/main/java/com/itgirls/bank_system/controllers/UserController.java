@@ -2,7 +2,7 @@ package com.itgirls.bank_system.controllers;
 
 import com.itgirls.bank_system.dto.UserCreateDto;
 import com.itgirls.bank_system.dto.UserDto;
-import com.itgirls.bank_system.model.User;
+import com.itgirls.bank_system.dto.UserUpdateDto;
 import com.itgirls.bank_system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public UserDto updateUser(@RequestBody User user) {
+    public UserDto updateUser(@RequestBody UserUpdateDto user) {
         return userService.updateUser(user);
     }
 
