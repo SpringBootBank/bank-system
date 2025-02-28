@@ -7,7 +7,7 @@ import lombok.*;
 import com.itgirls.bank_system.enums.Role;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "bank_user")
 @Getter
 @Setter
 @NoArgsConstructor
