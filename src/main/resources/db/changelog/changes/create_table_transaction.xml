@@ -1,0 +1,28 @@
+<databaseChangeLog>
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="create_table_transaction" author="Borovik">
+        <sql>
+            create table if not exists transaction(
+            id bigserial primary key,
+            transaction_number bigint not null unique,
+            transaction_type varchar not null,
+            transaction_amount decimal(15,3) not null,
+            transaction_time timestamp not null,
+            sender_account_id bigint not null,
+            beneficiary_account_id bigint not null,
+            foreign key (sender_account_id) references account (id),
+            foreign key (beneficiary_account_id) references account (id)
+            )
+        </sql>
+    </changeSet>
+</databaseChangeLog>
+
+
+
+
+
+
