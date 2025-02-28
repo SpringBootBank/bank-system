@@ -5,7 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <include file="/db.changelog/changes/create_table_user_26.02.2025.xml"/>
-    <include file="/db.changelog/changes/filling_users_26.02.2025.xml"/>
+    <include file="classpath:/db/changelog/changes/create_table_bank_user.xml"/>
+    <include file="classpath:/db/changelog/changes/filling_users_26.02.2025.xml"/>
+    <include file="classpath:/db/changelog/changes/create_table_deposit.xml"/>
+    <include file="classpath:/db/changelog/changes/create_table_loan.xml"/>
+    <include file="classpath:/db/changelog/changes/create_table_account.xml"/>
 
 </databaseChangeLog>

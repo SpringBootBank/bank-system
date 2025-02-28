@@ -3,28 +3,31 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create_table_user" author="Ekaterina_Bobrysheva">
         <preConditions onFail="MARK_RAN">
-            <not><tableExists tableName="user"/></not>
+            <not><tableExists tableName="bank_user"/>
+            </not>
         </preConditions>
-        <createTable tableName="user">
+        <createTable tableName="bank_user">
             <column name="id" type="bigserial" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="email" type="varchar(100)">
+            <column name="name" type="varchar(100)">
                 <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="varchar(300)">
                 <constraints nullable="false"/>
             </column>
             <column name="role" type="varchar(100)">
                 <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(100)">
-            </column>
-            <column name="surname" type="varchar(100)">
             </column>
         </createTable>
     </changeSet>

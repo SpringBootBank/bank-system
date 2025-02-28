@@ -6,8 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import com.itgirls.bank_system.security.Role;
 
+import java.util.Set;
+
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "bank_user")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,17 +31,16 @@ public class User {
 
     @Email
     @NotBlank
-    @Column(unique = true, nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false)
     private Role role;
 //
 //    @OneToMany(mappedBy = "user")
 //    private Set <Account> accounts;
-
 }
