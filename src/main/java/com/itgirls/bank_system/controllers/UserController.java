@@ -1,5 +1,6 @@
 package com.itgirls.bank_system.controllers;
 
+import com.itgirls.bank_system.dto.UserCreateDto;
 import com.itgirls.bank_system.dto.UserDto;
 import com.itgirls.bank_system.model.User;
 import com.itgirls.bank_system.service.UserService;
@@ -16,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<UserDto> addNewUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> addNewUser(@RequestBody UserCreateDto user) {
         return ResponseEntity.ok(userService.addNewUser(user));
     }
 
