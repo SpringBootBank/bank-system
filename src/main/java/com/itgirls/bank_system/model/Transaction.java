@@ -1,12 +1,12 @@
 package com.itgirls.bank_system.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import com.itgirls.bank_system.enums.TransactionType;
-
+import org.hibernate.annotations.UuidGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table (name = "transaction")
@@ -16,16 +16,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Transaction {
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "transaction_number", unique = true, nullable = false)
-    private String transactionNumber;
+    @Id
+    @GeneratedValue
+    @UuidGenerator
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "transaction_type", nullable = false)
-    @NotBlank(message = "введите тип транзакции")
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
@@ -35,18 +33,12 @@ public class Transaction {
     @Column(name = "transaction_time", nullable = false)
     private LocalDateTime transactionTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_account_id", referencedColumnName = "id", nullable = false)
     private Account senderAccount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "beneficiary_account_id", referencedColumnName = "id", nullable = false)
     private Account beneficiaryAccount;
-
-    @PrePersist
-    public void generateTransactionNumber() {
-        if (transactionNumber == null) {
-            this.transactionNumber = String.valueOf(System.currentTimeMillis());
-        }
     }
-}
+

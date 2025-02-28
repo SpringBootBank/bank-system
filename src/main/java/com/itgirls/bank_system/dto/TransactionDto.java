@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -18,12 +19,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionDto {
-
-    private Long id;
-
-    @NotBlank(message = "Номер транзакции обязателен")
-    @Size(min = 5, message = "Номер транзакции должен содержать не менее 5 символов")
-    private String transactionNumber;
+    private UUID id;
 
     @NotBlank(message = "Тип транзакции обязателен")
     @Pattern(regexp = "^(INCOMING|OUTGOING)$",
@@ -31,6 +27,7 @@ public class TransactionDto {
     private String transactionType;
 
     @NotNull(message = "Сумма транзакции обязательна")
+    @DecimalMin(value = "0.01")
     private BigDecimal transactionAmount;
 
     @NotNull(message = "Время транзакции не может быть пустым")

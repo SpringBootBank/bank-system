@@ -1,16 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog>
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create_table_transaction" author="Borovik">
         <sql>
             create table if not exists transaction(
-            id bigserial primary key,
-            transaction_number bigint not null unique,
-            transaction_type varchar not null,
-            transaction_amount decimal(15,3) not null,
+            id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+            transaction_type varchar(50) not null,
+            transaction_amount decimal(15,3) not null CHECK (transaction_amount > 0),
             transaction_time timestamp not null,
             sender_account_id bigint not null,
             beneficiary_account_id bigint not null,
