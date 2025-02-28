@@ -7,5 +7,6 @@
 
     <include file="/db/changelog/changes/create_table_user_26.02.2025.xml"/>
     <include file="/db/changelog/changes/filling_users_26.02.2025.xml"/>
+    <include file="db/changelog/changes/create_table_deposit.xml"/>
 
 </databaseChangeLog>
