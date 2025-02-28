@@ -22,7 +22,7 @@ public class Transaction {
     private Long id;
 
     @Column(name = "transaction_number", unique = true, nullable = false)
-    private Long transactionNumber;
+    private String transactionNumber;
 
     @Column(name = "transaction_type", nullable = false)
     @NotBlank(message = "введите тип транзакции")
@@ -46,7 +46,7 @@ public class Transaction {
     @PrePersist
     public void generateTransactionNumber() {
         if (transactionNumber == null) {
-            this.transactionNumber = System.currentTimeMillis();
+            this.transactionNumber = String.valueOf(System.currentTimeMillis());
         }
     }
 }
