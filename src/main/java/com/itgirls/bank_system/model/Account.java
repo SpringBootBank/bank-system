@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "account")
@@ -32,10 +33,10 @@ public class Account {
     @Column(nullable = false)
     private AccountType type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "account")
-    private List<Transaction>transactions;
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private Set<Transaction> transactions;
 }
