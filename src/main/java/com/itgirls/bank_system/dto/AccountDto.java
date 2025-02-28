@@ -1,7 +1,7 @@
 package com.itgirls.bank_system.dto;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -17,14 +17,14 @@ public class AccountDto {
 
     private Long id;
 
-    @NotNull(message = "Номер счета обязателен")
+    @NotBlank(message = "Номер счета обязателен")
     @Pattern(regexp = "\\d{16}", message = "Номер счета должен содержать 16 цифр")
     private String accountNumber;
 
-    @NotNull(message = "Баланс обязателен")
+    @NotBlank(message = "Баланс обязателен")
     @Min(value = 0, message = "Баланс не может быть отрицательным")
     private BigDecimal balance;
 
-    @NotNull(message = "Тип счета обязателен")
+    @NotBlank(message = "Тип счета обязателен")
     private String type;
 }
