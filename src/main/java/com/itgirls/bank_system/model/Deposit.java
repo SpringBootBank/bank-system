@@ -19,24 +19,24 @@ public class Deposit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private BigDecimal amount;
+    @Column(name="amount_deposit", nullable = false)
+    private BigDecimal amountDeposit;
 
-    @Column(name="interest_rate", nullable = false)
-    private BigDecimal interestRate;
+    @Column(name="interest_rate_deposit", nullable = false)
+    private BigDecimal interestRateDeposit;
 
-    @Column(name="start_date", nullable = false)
-    private LocalDate startDate;
+    @Column(name="start_date_deposit", nullable = false)
+    private LocalDate startDateDeposit;
 
-    @Column(name="end_date", nullable = false)
-    private LocalDate endDate;
+    @Column(name="end_date_deposit", nullable = false)
+    private LocalDate endDateDeposit;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DepositStatus status;
+    @Column(name="status_deposit", nullable = false)
+    private DepositStatus statusDeposit;
 
-    @OneToOne
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+//    @OneToOne
+//    @JoinColumn(name = "account_id", nullable = false)
+//    private Account accountDeposit;
 
 }
