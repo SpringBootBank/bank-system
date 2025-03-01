@@ -3,13 +3,12 @@ package com.itgirls.bank_system.model;
 import jakarta.persistence.*;
 import lombok.*;
 import com.itgirls.bank_system.enums.TransactionType;
-import org.hibernate.annotations.UuidGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 
 @Entity
-@Table (name = "transaction")
+@Table (name = "transactions")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,10 +17,12 @@ import java.util.UUID;
 public class Transaction {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "transaction_number", nullable = false)
+    private String transactionNumber;
 
     @Column(name = "transaction_type", nullable = false)
     @Enumerated(EnumType.STRING)
