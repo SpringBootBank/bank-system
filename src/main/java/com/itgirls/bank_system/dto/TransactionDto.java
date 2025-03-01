@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Random;
+
 
 @Data
 @Builder
@@ -20,7 +21,12 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionDto {
-    private UUID id;
+
+    private Long id;
+
+    @NotBlank(message = "Номер транзакции обязателен")
+    @Size(min = 5, message = "Номер транзакции должен содержать не менее 5 символов")
+    private String transactionNumber;
 
     @NotBlank(message = "Тип транзакции обязателен")
     @Pattern(regexp = "^(INCOMING|OUTGOING)$",
@@ -51,7 +57,16 @@ public class TransactionDto {
             this.beneficiaryAccountId = beneficiaryAccount.getId();
         }
     }
+
+    public void generateTransactionNumber() {
+        long currentTimeMillis = System.currentTimeMillis();
+        Random random = new Random();
+        int randomPart = random.nextInt(1000);
+        String generatedNumber = "TXN-" + currentTimeMillis + "-" + randomPart;
+        this.transactionNumber = generatedNumber;
+    }
 }
+
 
 
 

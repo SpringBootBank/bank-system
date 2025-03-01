@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
+
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
@@ -7,10 +8,21 @@
 
     <include file="/db/changelog/changes/create_table_user_26.02.2025.xml"/>
     <include file="/db/changelog/changes/filling_users_26.02.2025.xml"/>
-    <include file="/db/changelog/changes/create_table_deposit.xml"/>
-    <include file="/db/changelog/changes/create_table_loan.xml"/>
     <include file="/db/changelog/changes/rename_user_table_28.02.2025.xml"/>
     <include file="/db/changelog/changes/create_table_account.xml"/>
-    <include file="/db/changelog/changes/create_table_transaction.xml"/>
+    <include file="/db/changelog/changes/create_table_deposit.xml"/>
+    <include file="/db/changelog/changes/create_table_loan.xml"/>
+    <include file="/db/changelog/changes/create_table_transactions.xml"/>
 
 </databaseChangeLog>
+
+
+
+
+
+
+
+
+
+
+
