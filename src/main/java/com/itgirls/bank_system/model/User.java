@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import com.itgirls.bank_system.security.Role;
+import com.itgirls.bank_system.enums.Role;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "bank_user")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,8 +38,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-//
-//    @OneToMany(mappedBy = "user")
-//    private Set <Account> accounts;
+
+    @Setter
+    @OneToMany(mappedBy = "user")
+    private Set <Account> accounts;
 
 }

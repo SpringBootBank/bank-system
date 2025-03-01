@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.itgirls.bank_system.security.Role;
+import com.itgirls.bank_system.enums.Role;
 
 @Data
 @Builder
@@ -26,5 +26,5 @@ public class UserDto {
 
     private Role role;
 
-//    private Set <Account> accounts;
+    private Set <Account> accounts;
 }
