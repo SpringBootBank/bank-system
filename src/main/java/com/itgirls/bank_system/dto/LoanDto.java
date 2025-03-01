@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoanDto {
-    private long id;
+    private Long id;
 
     @NotNull(message = "Укажите сумму кредита.")
     @Positive(message = "Сумма кредита должна быть положительной.")
