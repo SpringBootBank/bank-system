@@ -3,7 +3,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create-table-account" author="Nadezhda Churilo">
         <preConditions onFail="MARK_RAN">
@@ -25,6 +25,23 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="add-bank_user-id-column-to-account" author="Nadezhda Churilo">
+        <addColumn tableName="account">
+            <column name="bank_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-foreign-key-to-account" author="Nadezhda Churilo">
+        <addForeignKeyConstraint
+                baseTableName="account"
+                baseColumnNames="bank_user_id"
+                constraintName="fk_account_bank_user"
+                referencedTableName="bank_user"
+        referencedColumnNames="id"/>
     </changeSet>
 
 </databaseChangeLog>
