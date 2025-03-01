@@ -7,11 +7,11 @@
 
     <include file="/db/changelog/changes/create_table_user_26.02.2025.xml"/>
     <include file="/db/changelog/changes/filling_users_26.02.2025.xml"/>
-    <include file="/db/changelog/changes/create_table_deposit.xml"/>
-    <include file="/db/changelog/changes/create_table_loan.xml"/>
     <include file="/db/changelog/changes/rename_user_table_28.02.2025.xml"/>
     <include file="/db/changelog/changes/create_table_account.xml"/>
-    <include file="/db/changelog/changes/create_table_transaction.xml"/>
+    <include file="/db/changelog/changes/create_table_deposit.xml"/>
+    <include file="/db/changelog/changes/create_table_loan.xml"/>
+    <include file="/db/changelog/changes/create_table_transactions.xml"/>
     <include file="/db/changelog/changes/add-user-id-column-to-account.xml"/>
 
 </databaseChangeLog>
