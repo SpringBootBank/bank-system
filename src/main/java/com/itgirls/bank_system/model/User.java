@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import com.itgirls.bank_system.enums.Role;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "bank_user")
 @Getter
@@ -41,6 +43,6 @@ public class User {
 
     @Setter
     @OneToMany(mappedBy = "user")
-    private Set <Account> accounts;
+    private Set<Account> accounts;
 
 }

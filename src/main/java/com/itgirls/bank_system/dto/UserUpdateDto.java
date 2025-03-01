@@ -1,6 +1,7 @@
 package com.itgirls.bank_system.dto;
 
 import com.itgirls.bank_system.enums.Role;
+import com.itgirls.bank_system.model.Account;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,5 +35,5 @@ public class UserUpdateDto {
 
     private Role role;
 
-    private Set <Account> accounts;
+    private Set<Account> accounts;
 }

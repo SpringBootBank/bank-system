@@ -2,11 +2,14 @@ package com.itgirls.bank_system.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.itgirls.bank_system.model.Account;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.itgirls.bank_system.enums.Role;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -26,5 +29,5 @@ public class UserDto {
 
     private Role role;
 
-    private Set <Account> accounts;
+    private Set<Account> accounts;
 }

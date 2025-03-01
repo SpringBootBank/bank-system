@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@Table(name = "deposit")
 public class Deposit {
 
     @Id

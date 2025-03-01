@@ -13,10 +13,11 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@Table(name = "loan")
 public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idLoan;
+    private Long id;
 
     @Column(name = "amount_loan", nullable = false)
     private BigDecimal amountLoan;
@@ -37,7 +38,7 @@ public class Loan {
     @Column(name ="status_loan", nullable = false)
     private LoanStatus statusLoan;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 }
