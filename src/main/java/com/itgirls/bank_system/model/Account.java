@@ -2,9 +2,7 @@ package com.itgirls.bank_system.model;
 
 import com.itgirls.bank_system.enums.AccountType;
 import jakarta.persistence.*;
-import jakarta.transaction.Transaction;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.util.Set;
