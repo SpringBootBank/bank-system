@@ -2,9 +2,7 @@ package com.itgirls.bank_system.model;
 
 import com.itgirls.bank_system.enums.AccountType;
 import jakarta.persistence.*;
-import jakarta.transaction.Transaction;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -36,6 +34,9 @@ public class Account {
     @JoinColumn(name = "bank_user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-    private Set<Transaction> transactions;
+    @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
+    private Set<Transaction> outgoingTransactions;
+
+    @OneToMany(mappedBy = "beneficiaryAccount", fetch = FetchType.LAZY)
+    private Set<Transaction> incomingTransactions;
 }
