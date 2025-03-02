@@ -39,4 +39,8 @@ public class Account {
 
     @OneToMany(mappedBy = "beneficiaryAccount", fetch = FetchType.LAZY)
     private Set<Transaction> incomingTransactions;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "loan_id", nullable = false)
+    private Loan loan;
 }

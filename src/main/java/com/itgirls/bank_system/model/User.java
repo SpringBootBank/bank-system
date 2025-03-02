@@ -45,4 +45,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Account> accounts;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "loan_id", nullable = false)
+    private Loan loan;
 }

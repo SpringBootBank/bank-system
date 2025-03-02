@@ -41,4 +41,8 @@ public class Loan {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_user_id", nullable = false)
+    private User user;
 }
