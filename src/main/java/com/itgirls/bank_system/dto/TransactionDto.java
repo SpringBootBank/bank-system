@@ -3,6 +3,10 @@ package com.itgirls.bank_system.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itgirls.bank_system.model.Account;
+import com.itgirls.bank_system.model.User;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,25 +50,8 @@ public class TransactionDto {
     @NotNull(message = "Указание получателя  обязательно")
     private Long beneficiaryAccountId;
 
-    public void setSenderAccount(Account senderAccount) {
-        if (senderAccount != null) {
-            this.senderAccountId = senderAccount.getId();
-        }
-    }
-
-    public void setBeneficiaryAccount(Account beneficiaryAccount) {
-        if (beneficiaryAccount != null) {
-            this.beneficiaryAccountId = beneficiaryAccount.getId();
-        }
-    }
-
-    public void generateTransactionNumber() {
-        long currentTimeMillis = System.currentTimeMillis();
-        Random random = new Random();
-        int randomPart = random.nextInt(1000);
-        String generatedNumber = "TXN-" + currentTimeMillis + "-" + randomPart;
-        this.transactionNumber = generatedNumber;
-    }
+    @NotNull(message = "Указание пользователя обязательно")
+    private Long bankUserId;
 }
 
 

@@ -34,12 +34,12 @@ public class Account {
     @JoinColumn(name = "bank_user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "senderAccount", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Transaction> outgoingTransactions;
-
-    @OneToMany(mappedBy = "beneficiaryAccount", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Transaction> incomingTransactions;
-
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Loan> loans;
+
+    @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
+    private Set<Transactions> outgoingTransactions;
+
+    @OneToMany(mappedBy = "beneficiaryAccount", fetch = FetchType.LAZY)
+    private Set<Transactions> incomingTransactions;
 }
