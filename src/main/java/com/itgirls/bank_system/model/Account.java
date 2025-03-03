@@ -35,8 +35,8 @@ public class Account {
     private User user;
 
     @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
-    private Set<Transaction> outgoingTransactions;
+    private Set<Transactions> outgoingTransactions;
 
     @OneToMany(mappedBy = "beneficiaryAccount", fetch = FetchType.LAZY)
-    private Set<Transaction> incomingTransactions;
+    private Set<Transactions> incomingTransactions;
 }
