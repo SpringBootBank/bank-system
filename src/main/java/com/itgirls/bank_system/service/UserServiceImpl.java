@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers () {
+    public List<UserDto> getAllUsers() {
         return userRepository.findAll().stream().map(this::convertUserToDto).collect(Collectors.toList());
     }
 
@@ -67,11 +67,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public String deleteUser(Long id) {
+        if (userRepository.existsById(id)) {
+            try {
+                userRepository.deleteById(id);
+                return "Пользователь с идентификаторо м" + id + " успешно удален";
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else return "Пользователь с идентификатором " + id + " не найден";
     }
 
-    private UserDto convertUserToDto (User user) {
+    private UserDto convertUserToDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())

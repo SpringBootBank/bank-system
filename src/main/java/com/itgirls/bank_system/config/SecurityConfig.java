@@ -22,7 +22,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/login").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/users").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
