@@ -42,10 +42,9 @@ public class User {
     private Role role;
 
     @Setter
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Account> accounts;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "loan_id", nullable = false)
-    private Loan loan;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Loan> loans;
 }
