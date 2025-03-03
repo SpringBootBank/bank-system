@@ -12,6 +12,7 @@
     <include file="/db/changelog/changes/create_table_account.xml"/>
     <include file="/db/changelog/changes/create_table_deposit.xml"/>
     <include file="/db/changelog/changes/create_table_loan.xml"/>
+    <include file="/db/changelog/changes/filling_table_loan.xml"/>
     <include file="/db/changelog/changes/create_table_transactions.xml"/>
 
 </databaseChangeLog>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="filling_table_loan" author="Marina Bondareva">
+        <sql>
+            INSERT INTO "loan" (amount_loan, interest_rate_loan, start_date_loan, end_date_loan, monthly_payment_loan,
+            status_loan, account_id, bank_user_id)
+            VALUES
+            (350, 6, '2025-04-01', '2026-04-01', 30.12, 'ACTIVE', '1', '1'),
+            (500, 10, '2025-05-13', '2026-10-13', 30.03, 'ACTIVE', '2', '2'),
+            (1500, 20, '2023-02-15', '2024-02-15', 138.95, 'CLOSED', '3', '3'),
+            (800, 15, '2024-03-21', '2024-08-21', 138.8, 'CLOSED', '4', '4'),
+            (20000, 2, '2021-09-30', '2026-09-30', 351.08, 'OVERDUE', '5', '5');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

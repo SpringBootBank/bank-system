@@ -12,7 +12,7 @@
             </not>
         </preConditions>
         <createTable tableName="loan">
-            <column name="loan_id" type="bigserial" autoIncrement="true">
+            <column name="id" type="bigserial" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="amount_loan" type="decimal(15,2)">
@@ -35,6 +35,9 @@
             </column>
             <column name="account_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="loan_account" references="account(id)"/>
+            </column>
+            <column name="bank_user_id" type="bigserial">
+                <constraints nullable="false" foreignKeyName="loan_bank_user" references="bank_user(id)"/>
             </column>
         </createTable>
     </changeSet>
