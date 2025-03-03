@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+<changeSet id="filling_table_deposit" author="Ekaterina Panova">
+    <preConditions onFail="MARK_RAN">
+        <tableExists tableName="deposit"/>
+    </preConditions>
+    <insert tableName="deposit">
+        <column name="amount_deposit" valueNumeric="1000.00"/>
+        <column name="interest_rate_deposit" valueNumeric="3.5"/>
+        <column name="start_date_deposit" valueDate="2025-03-01"/>
+        <column name="end_date_deposit" valueDate="2025-09-01"/>
+        <column name="status_deposit" value="ACTIVE"/>
+        <column name="account_id" valueNumeric="1"/>
+        <column name="bank_user_id" valueNumeric="1"/>
+    </insert>
+    <insert tableName="deposit">
+        <column name="amount_deposit" valueNumeric="2000.00"/>
+        <column name="interest_rate_deposit" valueNumeric="4.0"/>
+        <column name="start_date_deposit" valueDate="2025-03-02"/>
+        <column name="end_date_deposit" valueDate="2025-09-02"/>
+        <column name="status_deposit" value="FROZEN"/>
+        <column name="account_id" valueNumeric="2"/>
+        <column name="bank_user_id" valueNumeric="2"/>
+    </insert>
+    <insert tableName="deposit">
+        <column name="amount_deposit" valueNumeric="1500.00"/>
+        <column name="interest_rate_deposit" valueNumeric="3.8"/>
+        <column name="start_date_deposit" valueDate="2025-03-03"/>
+        <column name="end_date_deposit" valueDate="2025-09-03"/>
+        <column name="status_deposit" value="CLOSED"/>
+        <column name="account_id" valueNumeric="3"/>
+        <column name="bank_user_id" valueNumeric="3"/>
+    </insert>
+    <insert tableName="deposit">
+        <column name="amount_deposit" valueNumeric="3000.00"/>
+        <column name="interest_rate_deposit" valueNumeric="4.2"/>
+        <column name="start_date_deposit" valueDate="2025-03-04"/>
+        <column name="end_date_deposit" valueDate="2025-09-04"/>
+        <column name="status_deposit" value="ACTIVE"/>
+        <column name="account_id" valueNumeric="4"/>
+        <column name="bank_user_id" valueNumeric="4"/>
+    </insert>
+    <insert tableName="deposit">
+        <column name="amount_deposit" valueNumeric="2500.00"/>
+        <column name="interest_rate_deposit" valueNumeric="3.7"/>
+        <column name="start_date_deposit" valueDate="2025-03-05"/>
+        <column name="end_date_deposit" valueDate="2025-09-05"/>
+        <column name="status_deposit" value="FROZEN"/>
+        <column name="account_id" valueNumeric="5"/>
+        <column name="bank_user_id" valueNumeric="5"/>
+    </insert>
+</changeSet>
+</databaseChangeLog>

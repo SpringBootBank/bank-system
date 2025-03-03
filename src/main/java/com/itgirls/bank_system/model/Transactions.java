@@ -44,7 +44,7 @@ public class Transactions {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_user_id", referencedColumnName = "id", nullable = false)
-    private User bankUser;
+    private User user;
 }
 
 
