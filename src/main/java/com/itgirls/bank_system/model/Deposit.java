@@ -36,8 +36,8 @@ public class Deposit {
     @Column(name="status_deposit", nullable = false)
     private DepositStatus statusDeposit;
 
-//    @OneToOne
-//    @JoinColumn(name = "account_id", nullable = false)
-//    private Account accountDeposit;
+    @OneToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account accountDeposit;
 
 }
