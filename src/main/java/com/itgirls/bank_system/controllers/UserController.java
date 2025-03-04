@@ -29,17 +29,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    UserDto getUserByID(@PathVariable ("id") Long id) {
+    UserDto getUserByID(@PathVariable("id") Long id) {
         return userService.getUserByID(id);
     }
 
     @PutMapping
-    public UserDto updateUser(@RequestBody @Valid UserUpdateDto user) {
-        return userService.updateUser(user);
+    public UserDto updateUserPut(@RequestBody @Valid UserUpdateDto user) {
+        return userService.updateUser(user, false);
+    }
+
+    @PatchMapping
+    public UserDto updateUserPatch(@RequestBody @Valid UserUpdateDto user) {
+        return userService.updateUser(user, true);
     }
 
     @DeleteMapping("/{id}")
-    void deleteUser(@PathVariable ("id") Long id) {
-        userService.deleteUser(id);
+    String deleteUser(@PathVariable("id") Long id) {
+        return userService.deleteUser(id);
     }
 }
