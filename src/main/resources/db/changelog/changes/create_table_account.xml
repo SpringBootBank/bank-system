@@ -12,7 +12,7 @@
             </not>
         </preConditions>
         <createTable tableName="account">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="account_number" type="varchar(16)">
@@ -24,15 +24,10 @@
             <column name="type" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="add-bank_user-id-column-to-account" author="Nadezhda Churilo">
-        <addColumn tableName="account">
             <column name="bank_user_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-        </addColumn>
+        </createTable>
     </changeSet>
 
     <changeSet id="add-foreign-key-to-account" author="Nadezhda Churilo">
@@ -41,7 +36,47 @@
                 baseColumnNames="bank_user_id"
                 constraintName="fk_account_bank_user"
                 referencedTableName="bank_user"
-        referencedColumnNames="id"/>
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add-index-on-bank_user_id" author="Nadezhda Churilo">
+        <createIndex indexName="idx_account_bank_user_id" tableName="account">
+            <column name="bank_user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="insert-accounts" author="Nadezhda Churilo">
+        <insert tableName="account">
+            <column name="account_number" value="1234567890123456"/>
+            <column name="balance" value="5000.00"/>
+            <column name="type" value="SAVINGS"/>
+            <column name="bank_user_id" value="1"/>
+        </insert>
+        <insert tableName="account">
+            <column name="account_number" value="2345678901234567"/>
+            <column name="balance" value="1200.50"/>
+            <column name="type" value="CHECKING"/>
+            <column name="bank_user_id" value="2"/>
+        </insert>
+        <insert tableName="account">
+            <column name="account_number" value="3456789012345678"/>
+            <column name="balance" value="30000.00"/>
+            <column name="type" value="SAVINGS"/>
+            <column name="bank_user_id" value="3"/>
+        </insert>
+        <insert tableName="account">
+            <column name="account_number" value="4567890145753763"/>
+            <column name="balance" value="250000.00"/>
+            <column name="type" value="SAVINGS"/>
+            <column name="bank_user_id" value="4"/>
+        </insert>
+        <insert tableName="account">
+            <column name="account_number" value="0987654321098765"/>
+            <column name="balance" value="67000.00"/>
+            <column name="type" value="BUSINESS"/>
+            <column name="bank_user_id" value="5"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>
+

@@ -38,20 +38,15 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Setter
-    @OneToMany(mappedBy = "bank_user_id")
+    @OneToMany(mappedBy = "user", @setNull, fetch = FetchType.LAZY)
     private Set<Account> accounts;
 
-    @Setter
-    @OneToMany(mappedBy = "bank_user_id")
-    private Set<Deposit> deposits;
-
-    @Setter
-    @OneToMany(mappedBy = "bank_user_id")
+    @OneToMany(mappedBy = "user",  @setNull, fetch = FetchType.LAZY)
     private Set<Loan> loans;
 
-    @Setter
-    @OneToMany(mappedBy = "bank_user_id")
-    private Set<Transaction> transactions;
+    @OneToMany(mappedBy = "userDeposit", @setNull, fetch = FetchType.LAZY)
+    private Set<Deposit> deposits;
 
+    @OneToMany(mappedBy = "user", @setNull, fetch = FetchType.LAZY)
+    private Set<Transactions> transactions;
 }

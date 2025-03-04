@@ -33,6 +33,15 @@
         <column name="account_id" type="bigint">
             <constraints nullable="false" foreignKeyName="deposit_account" references="account(id)"/>
         </column>
+        <column name="bank_user_id" type="bigint">
+            <constraints nullable="false" foreignKeyName="deposit_bank_user" references="bank_user(id)"/>
+        </column>
     </createTable>
+        <createIndex indexName="idx_deposit_account_id" tableName="deposit">
+            <column name="account_id"/>
+        </createIndex>
+        <createIndex indexName="idx_deposit_bank_user_id" tableName="deposit">
+            <column name="bank_user_id"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

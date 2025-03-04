@@ -42,4 +42,10 @@ public class DepositDto {
     @NotBlank
     @Pattern(regexp = "^(ACTIVE|CLOSED|FROZEN)$", message = "Статус депозита должен быть ACTIVE, CLOSED или FROZEN.")
     private String statusDeposit;
+
+    @NotNull(message = "Введите ID депозитного счёта.")
+    private AccountDto accountDeposit;
+
+    @NotNull(message = "Введите ID пользователя, на имя которого оформлен вклад.")
+    private UserDto userDeposit;
 }

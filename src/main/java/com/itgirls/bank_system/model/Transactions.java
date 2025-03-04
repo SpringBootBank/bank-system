@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Transaction {
+public class Transactions {
 
     @Id
     @Column
@@ -41,5 +41,10 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "beneficiary_account_id", referencedColumnName = "id", nullable = false)
     private Account beneficiaryAccount;
-    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_user_id", referencedColumnName = "id", nullable = false)
+    private User user;
+}
+
 

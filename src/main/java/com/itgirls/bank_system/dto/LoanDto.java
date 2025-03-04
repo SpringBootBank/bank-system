@@ -1,6 +1,7 @@
 package com.itgirls.bank_system.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LoanDto {
     private Long id;
 
@@ -29,11 +31,9 @@ public class LoanDto {
     private BigDecimal interestRateLoan;
 
     @NotNull(message = "Введите дату начала кредита.")
-    @FutureOrPresent(message = "Дата начала кредита должна быть не раньше сегодняшней.")
     private LocalDate startDateLoan;
 
     @NotNull(message = "Введите дату окончания кредита.")
-    @Future(message = "Дата окончания кредита должна быть позднее даты начала кредита.")
     private LocalDate endDateLoan;
 
     @NotNull(message = "Укажите сумму ежемесячного платежа по кредиту.")
