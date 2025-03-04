@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="filling_transactions_04.03.2025" author="Borovik">
+        <sql>
+            INSERT INTO "transactions" (transaction_number, transaction_type, transaction_amount,
+            transaction_time,  sender_account_id,
+            beneficiary_account_id, bank_user_id)
+            VALUES
+            ('TXN-1709478104000-550e8400', 'OUTGOING', 1500.50, '2025-03-01 10:15:00', 1, 3, 1),
+            ('TXN-1709478103562-750e8840', 'INCOMING', 500.75, '2025-03-02 12:30:15', 5, 2, 2),
+            ('TXN-1709478164280-550r4700', 'OUTGOING', 250.00, '2025-03-03 14:45:00', 3, 1, 3),
+            ('TXN-1709478104022-550w1835', 'OUTGOING', 2200.00, '2025-03-03 16:10:20', 4, 5, 4),
+            ('TXN-1709478104695-550e8722', 'INCOMING', 780.25, '2025-03-04 14:25:00', 2, 5, 5);
+        </sql>
+    </changeSet>
+</databaseChangeLog>
