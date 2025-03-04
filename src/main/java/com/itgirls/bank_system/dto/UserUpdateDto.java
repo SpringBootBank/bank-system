@@ -2,13 +2,13 @@ package com.itgirls.bank_system.dto;
 
 import com.itgirls.bank_system.enums.Role;
 import com.itgirls.bank_system.model.Account;
+import com.itgirls.bank_system.model.Deposit;
+import com.itgirls.bank_system.model.Loan;
+import com.itgirls.bank_system.model.Transaction;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -30,10 +30,16 @@ public class UserUpdateDto {
     @Email
     private String email;
 
-    @Size (min = 5, max = 50)
+    @Size(min = 5, max = 50)
     private String password;
 
     private Role role;
 
     private Set<Account> accounts;
+
+    private Set<Deposit> deposits;
+
+    private Set<Loan> loans;
+
+    private Set<Transaction> transactions;
 }

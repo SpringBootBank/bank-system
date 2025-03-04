@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,17 +48,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UserUpdateDto userUpdateDto) {
-        User newUser = userRepository.findUserById(userUpdateDto.getId());
-        String passwordEncode = passwordEncoder.encode(userUpdateDto.getPassword());
-        newUser.setPassword(passwordEncode);
-        newUser.setRole(userUpdateDto.getRole());
-        newUser.setName(userUpdateDto.getName());
-        newUser.setSurname(userUpdateDto.getSurname());
-        newUser.setEmail(userUpdateDto.getEmail());
-        newUser.setAccounts(userUpdateDto.getAccounts());
-        userRepository.save(newUser);
-        return convertUserToDto(newUser);
+    @Transactional
+    public UserDto updateUser(UserUpdateDto userUpdateDto, boolean usePatch) {
+        User user = userRepository.findById(userUpdateDto.getId()).
+                orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        if (!usePatch || userUpdateDto.getPassword() != null) {
+            String passwordEncode = passwordEncoder.encode(userUpdateDto.getPassword());
+            user.setPassword(passwordEncode);
+        }
+        if (!usePatch || userUpdateDto.getRole() != null) {
+            user.setRole(userUpdateDto.getRole());
+        }
+        if (!usePatch || userUpdateDto.getName() != null) {
+            user.setName(userUpdateDto.getName());
+        }
+        if (!usePatch || userUpdateDto.getSurname() != null) {
+            user.setSurname(userUpdateDto.getSurname());
+        }
+        if (!usePatch || userUpdateDto.getEmail() != null) {
+            user.setEmail(userUpdateDto.getEmail());
+        }
+        if (!usePatch && userUpdateDto.getAccounts() != null) {
+            user.setAccounts(userUpdateDto.getAccounts());
+        }
+        if (!usePatch && userUpdateDto.getDeposits() != null) {
+            user.setDeposits(userUpdateDto.getDeposits());
+        }
+        if (!usePatch && userUpdateDto.getLoans() != null) {
+            user.setLoans(userUpdateDto.getLoans());
+        }
+        if (usePatch && userUpdateDto.getTransactions() != null) {
+            user.setTransactions(userUpdateDto.getTransactions());
+        }
+        userRepository.save(user);
+        return convertUserToDto(user);
     }
 
     @Override
@@ -86,6 +110,9 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .surname(user.getSurname())
                 .accounts(user.getAccounts())
+                .deposits(user.getDeposits())
+                .loans(user.getLoans())
+                .transactions(user.getTransactions())
                 .build();
     }
 }

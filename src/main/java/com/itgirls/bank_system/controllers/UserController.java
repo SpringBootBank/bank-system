@@ -34,9 +34,13 @@ public class UserController {
     }
 
     @PutMapping
+    public UserDto updateUserPut(@RequestBody @Valid UserUpdateDto user) {
+        return userService.updateUser(user, false);
+    }
+
     @PatchMapping
-    public UserDto updateUser(@RequestBody @Valid UserUpdateDto user) {
-        return userService.updateUser(user);
+    public UserDto updateUserPatch (@RequestBody @Valid UserUpdateDto user) {
+        return userService.updateUser(user, true);
     }
 
     @DeleteMapping("/{id}")

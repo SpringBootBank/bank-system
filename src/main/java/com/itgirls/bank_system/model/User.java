@@ -21,15 +21,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank
     @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Email
     @NotBlank
     @Column(unique = true, nullable = false)
     private String email;
@@ -42,7 +39,19 @@ public class User {
     private Role role;
 
     @Setter
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "bank_user_id")
     private Set<Account> accounts;
+
+    @Setter
+    @OneToMany(mappedBy = "bank_user_id")
+    private Set<Deposit> deposits;
+
+    @Setter
+    @OneToMany(mappedBy = "bank_user_id")
+    private Set<Loan> loans;
+
+    @Setter
+    @OneToMany(mappedBy = "bank_user_id")
+    private Set<Transaction> transactions;
 
 }
