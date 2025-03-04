@@ -15,5 +15,7 @@
     <include file="/db/changelog/changes/create_table_loan.xml"/>
     <include file="/db/changelog/changes/filling_table_loan.xml"/>
     <include file="/db/changelog/changes/create_table_transactions.xml"/>
+    <include file="/db/changelog/changes/additions_to_table_transactions.xml"/>
+    <include file="/db/changelog/changes/filling_transactions_04.03.2025.xml"/>
 
 </databaseChangeLog>
