@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itgirls.bank_system.model.Account;
 import com.itgirls.bank_system.model.Deposit;
 import com.itgirls.bank_system.model.Loan;
-import com.itgirls.bank_system.model.Transaction;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.itgirls.bank_system.model.Transactions;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,5 +38,5 @@ public class UserDto {
 
     private Set<Loan> loans;
 
-    private Set<Transaction> transactions;
+    private Set <Transactions> transactions;
 }

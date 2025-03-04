@@ -6,7 +6,7 @@ import com.itgirls.bank_system.enums.Role;
 import com.itgirls.bank_system.model.Account;
 import com.itgirls.bank_system.model.Deposit;
 import com.itgirls.bank_system.model.Loan;
-import com.itgirls.bank_system.model.Transaction;
+import com.itgirls.bank_system.model.Transactions;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -45,5 +45,5 @@ public class UserUpdateDto {
 
     private Set<Loan> loans;
 
-    private Set<Transaction> transactions;
+    private Set<Transactions> transactions;
 }

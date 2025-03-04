@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PatchMapping
-    public UserDto updateUserPatch (@RequestBody @Valid UserUpdateDto user) {
+    public UserDto updateUserPatch(@RequestBody @Valid UserUpdateDto user) {
         return userService.updateUser(user, true);
     }
 
