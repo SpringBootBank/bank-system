@@ -3,6 +3,8 @@ package com.itgirls.bank_system.model;
 import com.itgirls.bank_system.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -34,10 +36,12 @@ public class Account {
     @JoinColumn(name = "bank_user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Loan> loans;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Deposit> deposits;
 
     @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)

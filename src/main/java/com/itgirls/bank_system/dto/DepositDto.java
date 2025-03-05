@@ -45,7 +45,7 @@ public class DepositDto {
     private String statusDeposit;
 
     @NotNull(message = "Введите ID депозитного счёта.")
-    private Account account;
+    private AccountDto account;
 
     @NotNull(message = "Введите ID пользователя, на имя которого оформлен вклад.")
     private UserDto user;

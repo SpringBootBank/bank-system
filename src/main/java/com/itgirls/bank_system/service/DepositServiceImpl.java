@@ -1,9 +1,13 @@
 package com.itgirls.bank_system.service;
 
+import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.dto.DepositDto;
 import com.itgirls.bank_system.enums.DepositStatus;
+import com.itgirls.bank_system.model.Account;
 import com.itgirls.bank_system.model.Deposit;
+import com.itgirls.bank_system.model.User;
 import com.itgirls.bank_system.repository.DepositRepository;
+import com.itgirls.bank_system.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -22,12 +27,14 @@ import java.util.stream.Collectors;
 public class DepositServiceImpl implements DepositService {
 
     private final DepositRepository depositRepository;
+    private final UserRepository userRepository;
+    //private final AccountRepository accountRepository;
 
     @Override
     public DepositDto createDeposit(DepositDto depositDto) {
         log.info("Открытие нового вклада.");
         Deposit newDeposit = new Deposit();
-        newDeposit.setAccount(depositDto.getAccount());
+        //newDeposit.setAccount(accountRepository.getReferenceById(depositDto.getAccount().getId()));
         newDeposit.setAmountDeposit(depositDto.getAmountDeposit());
         newDeposit.setStartDateDeposit(depositDto.getStartDateDeposit());
         newDeposit.setEndDateDeposit(depositDto.getEndDateDeposit());
@@ -35,7 +42,7 @@ public class DepositServiceImpl implements DepositService {
         newDeposit.setStatusDeposit(DepositStatus.valueOf(depositDto.getStatusDeposit()));
 
         depositRepository.save(newDeposit);
-        return convertToDto(newDeposit);
+        return convertDepositToDto(newDeposit);
     }
 
     @Override
@@ -48,8 +55,8 @@ public class DepositServiceImpl implements DepositService {
 
         for (Deposit deposit : depositList) {
             CompletableFuture<DepositDto> future = CompletableFuture.supplyAsync(() -> {
-                log.info("Обрабатываем депозит с id: {}", deposit.getId());
-                return convertToDto(deposit);
+                log.info("Обрабатываем депозит с ID: {}", deposit.getId());
+                return convertDepositToDto(deposit);
             });
             futures.add(future);
         }
@@ -67,9 +74,35 @@ public class DepositServiceImpl implements DepositService {
         try {
             Deposit deposit = depositRepository.getReferenceById(id);
             log.info("Вклад с ID {} найден.", id);
-            return convertToDto(deposit);
+            return convertDepositToDto(deposit);
         } catch (Exception e) {
             log.error("Вклад с ID {} не найден.", id);
+            return null;
+        }
+    }
+
+    public List<DepositDto> getDepositsByUserId(Long id) {
+        log.info("Поиск вклада(ов) по ID пользователя.");
+        try {
+            User user = userRepository.getReferenceById(id);
+            Set<Deposit> userDeposits = user.getDeposits();
+
+            if(!userDeposits.isEmpty()) {
+                log.info("Вклады пользователя с ID {} найдены.", id);
+                List<DepositDto> userDepositsDtoList = new ArrayList<>();
+                for(Deposit deposit : userDeposits) {
+                    DepositDto depositDto = convertDepositToDto(deposit);
+                    userDepositsDtoList.add(depositDto);
+                }
+                return userDepositsDtoList;
+            } else {
+                log.info("Вклады пользователя с ID {} не найдены.", id);
+                System.out.println("Вклады пользователя с ID " + id + " не найдены.");
+                return null;
+            }
+
+        } catch (Exception e) {
+            log.error("Пользователь с ID {} не найден.", id);
             return null;
         }
     }
@@ -108,11 +141,11 @@ public class DepositServiceImpl implements DepositService {
         }
     }
 
-    private DepositDto convertToDto(Deposit deposit) {
+    private DepositDto convertDepositToDto(Deposit deposit) {
         log.debug("Трансформация вклада с ID {} в DTO.", deposit.getId());
         return DepositDto.builder()
                 .id(deposit.getId())
-                .account(deposit.getAccount())
+                .account(convertAccountToDto(deposit.getAccount()))
                 .amountDeposit(deposit.getAmountDeposit())
                 .startDateDeposit(deposit.getStartDateDeposit())
                 .endDateDeposit(deposit.getEndDateDeposit())
@@ -121,12 +154,11 @@ public class DepositServiceImpl implements DepositService {
                 .build();
     }
 
-    @Async
-    private CompletableFuture<List<DepositDto>> getAllDepositsAsync(List<Deposit> deposits) {
-        log.info("Обработка вкладов в потоке: {}", Thread.currentThread().getName());
-        List<DepositDto> result = deposits.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        return CompletableFuture.completedFuture(result);
+    private AccountDto convertAccountToDto(Account account) {
+        log.debug("Трансформация счета с ID {} в DTO.", account.getId());
+        return AccountDto.builder()
+                .id(account.getId())
+                .accountNumber(account.getAccountNumber())
+                .build();
     }
 }
