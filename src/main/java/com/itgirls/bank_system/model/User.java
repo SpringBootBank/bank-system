@@ -48,7 +48,7 @@ public class User {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Loan> loans;
 
-    @OneToMany(mappedBy = "userDeposit", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Deposit> deposits;
 

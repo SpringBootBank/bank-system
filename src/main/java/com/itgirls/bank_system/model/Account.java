@@ -37,7 +37,7 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Loan> loans;
 
-    @OneToMany(mappedBy = "accountDeposit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Deposit> deposits;
 
     @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
