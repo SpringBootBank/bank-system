@@ -25,7 +25,12 @@ public class AccountService {
 
     @Async
     public CompletableFuture<AccountDto> createAccount(AccountDto accountDto) {
-        log.info("Асинхронное создание счета: {}", accountDto);
+        log.info("Создание счета: {}", accountDto);
+
+        if (accountRepository.findByAccountNumber(accountDto.getAccountNumber())) {
+            throw new RuntimeException("Счет с таким номером уже существует");
+        }
+
         Account account = modelMapper.map(accountDto, Account.class);
         account = accountRepository.save(account);
         log.info("Создан новый счет с ID: {}", account.getId());
@@ -33,8 +38,11 @@ public class AccountService {
     }
 
     public List<AccountDto> getFilteredAccounts(String accountNumber, BigDecimal minBalance, BigDecimal maxBalance) {
-        log.info("Фильтр счетов: accountNumber = {}, minBalance = {}, maxBalance = {}", accountNumber, minBalance, maxBalance);
+        log.info("Получение счетов с фильтрами: accountNumber = {}, minBalance = {}, maxBalance = {}", accountNumber, minBalance, maxBalance);
         List<Account> accounts = accountRepository.findAll();
+        if (accounts.isEmpty()) {
+            throw new RuntimeException("Не найдено счетов");
+        }
         return accounts.stream()
                 .map(account -> modelMapper.map(account, AccountDto.class))
                 .collect(Collectors.toList());
@@ -42,9 +50,11 @@ public class AccountService {
 
     @Async
     public CompletableFuture<AccountDto> updateAccount(Long id, AccountDto accountDto) {
-        log.info("Асинхронное обновление счета с ID: {}", id);
+        log.info("Обновление счета с ID: {}", id);
+
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new RuntimeException("Счет с таким ID не найден"));
+
         modelMapper.map(accountDto, account);
         account = accountRepository.save(account);
         log.info("Обновлен счет с ID: {}", account.getId());
@@ -55,7 +65,7 @@ public class AccountService {
     public void deleteAccount(Long id) {
         log.info("Удаление счета с ID: {}", id);
         if (!accountRepository.existsById(id)) {
-            throw new RuntimeException("Account not found");
+            throw new RuntimeException("Счет с таким ID не найден");
         }
         accountRepository.deleteById(id);
     }
@@ -63,9 +73,8 @@ public class AccountService {
     public AccountDto getAccountById(Long id) {
         log.info("Получение счета с ID: {}", id);
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new RuntimeException("Счет с таким ID не найден"));
         return modelMapper.map(account, AccountDto.class);
     }
 }
-
 

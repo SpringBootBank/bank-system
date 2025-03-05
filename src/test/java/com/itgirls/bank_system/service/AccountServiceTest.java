@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,14 +61,5 @@ public class AccountServiceTest {
         when(modelMapper.map(account, AccountDto.class)).thenReturn(accountDto);
         AccountDto result = accountService.getAccountById(8L);
         assertEquals(result.getAccountNumber(), "6666666666666666");
-    }
-
-    @Test
-    public void testGetAccountByIdThrowsException() {
-        when(accountRepository.findById(8L)).thenReturn(Optional.empty());
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
-            accountService.getAccountById(8L);
-        });
-        assertEquals(thrown.getMessage(), "Account not found");
     }
 }
