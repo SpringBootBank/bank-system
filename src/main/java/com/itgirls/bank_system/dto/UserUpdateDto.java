@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itgirls.bank_system.enums.Role;
 import com.itgirls.bank_system.model.Account;
+import com.itgirls.bank_system.model.Deposit;
+import com.itgirls.bank_system.model.Loan;
+import com.itgirls.bank_system.model.Transactions;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -40,4 +40,10 @@ public class UserUpdateDto {
     private Role role;
 
     private Set<Account> accounts;
+
+    private Set<Deposit> deposits;
+
+    private Set<Loan> loans;
+
+    private Set<Transactions> transactions;
 }

@@ -3,12 +3,14 @@ package com.itgirls.bank_system.model;
 import jakarta.persistence.*;
 import lombok.*;
 import com.itgirls.bank_system.enums.TransactionType;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Entity
-@Table (name = "transactions")
+@Table(name = "transactions")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -44,7 +46,13 @@ public class Transactions {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_user_id", referencedColumnName = "id", nullable = false)
-    private User bankUser;
+    private User user;
+
+    @PrePersist
+    protected void onCreate() {
+
+        if (this.transactionNumber == null) {
+            this.transactionNumber = "TXN-" + UUID.randomUUID().toString();
+        }
+    }
 }
-
-

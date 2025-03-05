@@ -19,6 +19,28 @@
             foreign key (beneficiary_account_id) references account (id)
             )
         </sql>
+
+        <modifyDataType tableName="transactions" columnName="transaction_time" newDataType="timestamp(3)"/>
+
+        <addColumn tableName="transactions">
+            <column name="bank_user_id" type="bigint" remarks="ID пользователя, связанного с транзакцией"/>
+        </addColumn>
+        <addForeignKeyConstraint
+                baseTableName="transactions"
+                baseColumnNames="bank_user_id"
+                constraintName="fk_transactions_user"
+                referencedTableName="bank_user"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+        <createIndex indexName="idx_sender_account_id" tableName="transactions">
+            <column name="sender_account_id"/>
+        </createIndex>
+        <createIndex indexName="idx_beneficiary_account_id" tableName="transactions">
+            <column name="beneficiary_account_id"/>
+        </createIndex>
+        <createIndex indexName="idx_transactions_bank_user_id" tableName="transactions">
+            <column name="bank_user_id"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>
 

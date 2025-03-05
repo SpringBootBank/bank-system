@@ -36,9 +36,15 @@
             <column name="account_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="loan_account" references="account(id)"/>
             </column>
-            <column name="bank_user_id" type="bigserial">
+            <column name="bank_user_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="loan_bank_user" references="bank_user(id)"/>
             </column>
         </createTable>
+        <createIndex indexName="idx_loan_account_id" tableName="loan">
+            <column name="account_id"/>
+        </createIndex>
+        <createIndex indexName="idx_loan_bank_user_id" tableName="loan">
+            <column name="bank_user_id"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

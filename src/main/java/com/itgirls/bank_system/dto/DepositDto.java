@@ -3,7 +3,6 @@ package com.itgirls.bank_system.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.itgirls.bank_system.model.Account;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +43,9 @@ public class DepositDto {
     @Pattern(regexp = "^(ACTIVE|CLOSED|FROZEN)$", message = "Статус депозита должен быть ACTIVE, CLOSED или FROZEN.")
     private String statusDeposit;
 
-    @NotNull
-    private Account accountDeposit;
+    @NotNull(message = "Введите ID депозитного счёта.")
+    private AccountDto account;
+
+    @NotNull(message = "Введите ID пользователя, на имя которого оформлен вклад.")
+    private UserDto user;
 }

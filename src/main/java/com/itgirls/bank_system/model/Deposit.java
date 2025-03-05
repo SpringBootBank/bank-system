@@ -38,6 +38,10 @@ public class Deposit {
 
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false)
-    private Account accountDeposit;
+    private Account account;
+
+    @ManyToOne
+    @JoinColumn(name = "bank_user_id", nullable = false)
+    private User user;
 
 }
