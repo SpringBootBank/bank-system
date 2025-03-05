@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 @Controller
 @RequestMapping("/accounts")
 @AllArgsConstructor
@@ -41,7 +42,7 @@ public class AccountController {
     @PostMapping("/create")
     public String createAccount(@Valid @ModelAttribute AccountDto accountDto, Model model) {
         log.info("Создание счета: {}", accountDto);
-        AccountDto createdAccount = accountService.createAccount(accountDto);
+        AccountDto createdAccount = accountService.createAccount(accountDto).join();
         model.addAttribute("account", createdAccount);
         return "redirect:/accounts";
     }
@@ -65,7 +66,7 @@ public class AccountController {
     @PostMapping("/{id}/edit")
     public String updateAccount(@PathVariable Long id, @Valid @ModelAttribute AccountDto accountDto, Model model) {
         log.info("Обновление счета с ID: {}", id);
-        AccountDto updatedAccount = accountService.updateAccount(id, accountDto);
+        AccountDto updatedAccount = accountService.updateAccount(id, accountDto).join();
         model.addAttribute("account", updatedAccount);
         return "redirect:/accounts";
     }

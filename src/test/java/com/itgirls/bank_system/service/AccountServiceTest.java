@@ -4,6 +4,7 @@ import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.enums.AccountType;
 import com.itgirls.bank_system.model.Account;
 import com.itgirls.bank_system.repository.AccountRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,9 +14,11 @@ import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,18 +34,23 @@ public class AccountServiceTest {
     private AccountService accountService;
 
     @Test
+    @DisplayName("Тест создания счета (асинхронный)")
     public void testCreateAccount() {
         AccountDto accountDto = new AccountDto(8L, "6666666666666666", new BigDecimal(1000), "SAVINGS");
         Account account = new Account(8L, "6666666666666666", new BigDecimal(1000), AccountType.SAVINGS, null, null, null, null, null);
-
         when(modelMapper.map(accountDto, Account.class)).thenReturn(account);
         when(accountRepository.save(account)).thenReturn(account);
         when(modelMapper.map(account, AccountDto.class)).thenReturn(accountDto);
 
-        AccountDto result = accountService.createAccount(accountDto);
+        CompletableFuture<AccountDto> futureResult = accountService.createAccount(accountDto);
+        AccountDto result = futureResult.join();
 
-        assertEquals(result.getAccountNumber(), "6666666666666666");
-        assertEquals(result.getBalance(), new BigDecimal(1000));
+        assertEquals("6666666666666666", result.getAccountNumber(), "Неверный номер счета");
+        assertEquals(new BigDecimal(1000), result.getBalance(), "Неверный баланс");
+
+        verify(modelMapper).map(accountDto, Account.class);
+        verify(accountRepository).save(account);
+        verify(modelMapper).map(account, AccountDto.class);
     }
 
     @Test
