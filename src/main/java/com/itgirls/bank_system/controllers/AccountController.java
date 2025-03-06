@@ -2,6 +2,7 @@ package com.itgirls.bank_system.controllers;
 
 import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.service.AccountService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    @Operation(summary = "Добавление нового счёта")
     @PostMapping("/create")
     public ResponseEntity<AccountDto> createAccount(@RequestBody @Valid AccountDto accountDto) {
         try {
@@ -33,6 +35,7 @@ public class AccountController {
         }
     }
 
+    @Operation(summary = "Получить всех счетов")
     @GetMapping
     public ResponseEntity<List<AccountDto>> getAllAccounts(@RequestParam(required = false) String accountNumber,
                                                            @RequestParam(required = false) BigDecimal minBalance,
@@ -47,6 +50,7 @@ public class AccountController {
         }
     }
 
+    @Operation(summary = "Получить счёта по ID")
     @GetMapping("/{id}")
     public ResponseEntity<AccountDto> getAccountById(@PathVariable Long id) {
         try {
@@ -59,6 +63,7 @@ public class AccountController {
         }
     }
 
+    @Operation(summary = "Изменение счёта по ID")
     @PutMapping("/{id}")
     public ResponseEntity<AccountDto> updateAccount(@PathVariable Long id, @RequestBody @Valid AccountDto accountDto) {
         try {
@@ -71,6 +76,7 @@ public class AccountController {
         }
     }
 
+    @Operation(summary = "Удаление счёта по ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         try {
