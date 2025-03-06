@@ -125,6 +125,7 @@ public class DepositServiceImpl implements DepositService {
 
     @SneakyThrows
     @Override
+    @Transactional
     public DepositDto updateDeposit(DepositDto depositDto) throws DataAccessException, FailedConvertToDtoException {
         log.info("Внесение изменений во вклад с ID: {}", depositDto.getId());
         Deposit deposit = depositRepository.findById(depositDto.getId())
