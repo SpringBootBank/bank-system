@@ -10,8 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
+import jakarta.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +36,6 @@ public class UserCreateDto {
     @NotBlank (message = "Установите пароль пользователя")
     private String password;
 
-    @NotBlank(message = "Укажите роль пользователя")
+    @NotNull
     private Role role;
 }
