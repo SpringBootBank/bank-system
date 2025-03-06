@@ -25,6 +25,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/transactions").hasRole(Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.PUT, "/transactions").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/transactions").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/transactions/{userId}").hasAnyRole(Role.ADMIN.name(),
+                                        Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.DELETE, "/transactions/{id}").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
