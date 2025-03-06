@@ -25,7 +25,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @Operation(summary = "Добавление нового счёта")
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<AccountDto> createAccount(@RequestBody @Valid AccountDto accountDto) {
         try {
             log.info("Создание нового счета...");

@@ -34,4 +34,3 @@ public class AccountDto {
     private Set<TransactionDto> outgoingTransactions;
     private Set<TransactionDto> incomingTransactions;
 }
-

@@ -20,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public  SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests((authorize) ->
@@ -29,16 +29,15 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.PUT, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.DELETE, "/accounts").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.POST, "/deposits").hasAnyRole(Role.ADMIN.name(),
-                                        Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.PUT, "/deposits/{id}").hasAnyRole(Role.ADMIN.name(),
-                                        Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/accounts/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/deposits").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/deposits/{id}").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/loans").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/loans/").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/loans/").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/loans/{id}").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())

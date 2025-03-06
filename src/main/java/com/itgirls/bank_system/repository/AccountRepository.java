@@ -15,4 +15,3 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     List<Account> findByAccountNumberAndBalanceBetween(String accountNumber, BigDecimal minBalance, BigDecimal maxBalance);
 }
-
