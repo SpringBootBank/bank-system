@@ -64,7 +64,7 @@ public class DepositController {
     @GetMapping("/{id}")
     @Operation(summary = "Просмотр вклада по ID", description = "Этот метод позволяет посмотреть информацию по вкладу по "
             + "ID вклада")
-    public ResponseEntity<?> getDepositById(@RequestParam long id) {
+    public ResponseEntity<?> getDepositById(@PathVariable long id) {
         try {
             return ResponseEntity.ok().body(depositService.getDepositById(id));
         } catch (FailedConvertToDtoException e) {
@@ -76,7 +76,7 @@ public class DepositController {
     @GetMapping("/users/{id}")
     @Operation(summary = "Просмотр вклада или списка вкладов у пользователя по ID", description = "Этот метод позволяет " +
             "посмотреть информацию по вкладам у конкретного пользователя по ID пользователя")
-    public ResponseEntity<?> getDepositsByUserId(@RequestParam long id) {
+    public ResponseEntity<?> getDepositsByUserId(@PathVariable long id) {
         try {
             return ResponseEntity.ok().body(depositService.getDepositsByUserId(id));
         } catch(UserNotFoundException | RuntimeException e) {
@@ -111,7 +111,7 @@ public class DepositController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление вклада", description = "Этот метод позволяет удалить вклад из базы данных по ID вклада")
-    public String deleteDeposit(@RequestParam long id) {
+    public String deleteDeposit(@PathVariable long id) {
         try {
             return depositService.deleteDeposit(id);
         } catch (Exception e) {

@@ -40,10 +40,10 @@ public class Account {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Loan> loans;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Deposit> deposits;
 
-    @OneToOne(mappedBy = "senderAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
     private Set<Transactions> outgoingTransactions;
 
     @OneToMany(mappedBy = "beneficiaryAccount", fetch = FetchType.LAZY)
