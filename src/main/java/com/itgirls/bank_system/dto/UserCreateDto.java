@@ -10,8 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +21,7 @@ import java.util.Set;
 public class UserCreateDto {
 
     @Size(min = 3, max = 25)
-    @NotBlank(message = "Введите имя пользователя")
+    @NotNull
     private String name;
 
     @Size(min = 3, max = 25)
@@ -37,6 +36,6 @@ public class UserCreateDto {
     @NotBlank (message = "Установите пароль пользователя")
     private String password;
 
-    @NotBlank(message = "Укажите роль пользователя")
+    @NotNull
     private Role role;
 }
