@@ -3,8 +3,10 @@ package com.itgirls.bank_system.controllers;
 import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/accounts")
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "Счета", description = "Управление счетами")
 public class AccountController {
 
     private final AccountService accountService;
