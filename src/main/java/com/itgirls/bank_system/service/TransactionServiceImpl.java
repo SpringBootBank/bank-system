@@ -1,6 +1,6 @@
 package com.itgirls.bank_system.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.itgirls.bank_system.dto.TransactionDto;
 import com.itgirls.bank_system.enums.TransactionType;
 import com.itgirls.bank_system.model.Account;
@@ -8,7 +8,7 @@ import com.itgirls.bank_system.model.Transactions;
 import com.itgirls.bank_system.model.User;
 import com.itgirls.bank_system.repository.TransactionRepository;
 import com.itgirls.bank_system.repository.UserRepository;
-import jakarta.transaction.Transaction;
+import com.itgirls.bank_system.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.save(beneficiary);
         log.info("Обновили баланс счета получателя");
 
-        return new ObjectMapper().convertValue(savedTransaction, TransactionDto.class);
+        return convertTransactionToDto(savedTransaction);
     }
 
     @Override
@@ -72,8 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transactions> transactions = transactionRepository.findAll();
         log.info("Нашли {} транзакций", transactions.size());
 
-        return transactions.stream().map(transact -> new ObjectMapper()
-                .convertValue(transact, TransactionDto.class)).toList();
+        return convertTransactionToDto(transactions);
     }
 
     @Override
@@ -85,9 +84,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
         log.info("Нашли {} транзакций для пользователя с id: {}", transactions.size(), userId);
 
-        return transactions.stream()
-                .map(transact -> new ObjectMapper().convertValue(transact, TransactionDto.class))
-                .toList();
+        return convertTransactionToDto(transactions);
     }
 
     @Transactional
@@ -125,7 +122,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.save(account);
         log.info("Обновили баланс счета с id: {}", account.getId());
 
-        return new ObjectMapper().convertValue(transaction, TransactionDto.class);
+        return convertTransactionToDto(transaction);
     }
 
     public String deleteTransaction(Long id) {
@@ -137,6 +134,24 @@ public class TransactionServiceImpl implements TransactionService {
             log.error("Ошибка при удалении транзакции с id {}: {}", id, e.getMessage());
             return "Транзакция с id " + id + " не может быть удалена изза ошибки";
         }
+    }
+
+    private TransactionDto convertTransactionToDto(Transactions transaction) {
+        return TransactionDto.builder()
+                .id(transaction.getId())
+                .transactionNumber(transaction.getTransactionNumber())
+                .transactionType(transaction.getTransactionType().name())
+                .transactionAmount(transaction.getTransactionAmount())
+                .transactionTime(transaction.getTransactionTime())
+                .senderAccountId(transaction.getSenderAccount().getId())
+                .beneficiaryAccountId(transaction.getBeneficiaryAccount().getId())
+                .bankUserId(transaction.getBankUser().getId())
+                .build();
+    }
+    private List<TransactionDto> convertTransactionToDto(List<Transactions> transactions) {
+        return transactions.stream()
+                .map(this::convertTransactionToDto)
+                .toList();
     }
 }
 

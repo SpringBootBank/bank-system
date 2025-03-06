@@ -39,9 +39,9 @@ public class TransactionRestController {
         return ResponseEntity.ok().body(transactionServiceImpl.addNewTransaction(transactionDto));
     }
 
-    @PutMapping()
+    @PutMapping("/{id}")
     @Operation(summary = "изменение транзакции", description = "данный метод позволяет изменить сумму транзакции")
-    public ResponseEntity<?> updateTransaction(@Valid @RequestBody TransactionDto transactionDto,
+    public ResponseEntity<?> updateTransaction(@PathVariable("id") Long id, @Valid @RequestBody TransactionDto transactionDto,
                                                BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -51,6 +51,7 @@ public class TransactionRestController {
             });
             return ResponseEntity.badRequest().body(errors);
         }
+        transactionDto.setId(id);
         return ResponseEntity.ok().body(transactionServiceImpl.updateAmountOfTransaction(transactionDto));
     }
 
