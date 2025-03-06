@@ -25,7 +25,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.POST, "/deposits").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/deposits").hasAnyRole(Role.ADMIN.name(),
+                                        Role.CLIENT.name())
                                 .requestMatchers(HttpMethod.PUT, "/deposits/{id}").hasAnyRole(Role.ADMIN.name(),
                                         Role.CLIENT.name())
                                 .requestMatchers(HttpMethod.GET, "/deposits").hasRole(Role.ADMIN.name())
