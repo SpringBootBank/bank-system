@@ -30,7 +30,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
