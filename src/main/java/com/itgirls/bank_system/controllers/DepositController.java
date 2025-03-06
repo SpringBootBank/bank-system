@@ -1,11 +1,16 @@
 package com.itgirls.bank_system.controllers;
 
 import com.itgirls.bank_system.dto.DepositDto;
+import com.itgirls.bank_system.exception.DepositNotFoundException;
+import com.itgirls.bank_system.exception.FailedConvertToDtoException;
+import com.itgirls.bank_system.exception.UserNotFoundException;
 import com.itgirls.bank_system.service.DepositService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -14,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/deposits")
@@ -35,27 +42,47 @@ public class DepositController {
 
             return ResponseEntity.badRequest().body(errors);
         }
-        return ResponseEntity.ok().body(depositService.createDeposit(depositDto));
+        try {
+            return ResponseEntity.ok().body(depositService.createDeposit(depositDto));
+        } catch (DataAccessException | FailedConvertToDtoException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping()
     @Operation(summary = "Просмотр списка вкладов", description = "Этот метод позволяет выгрузить список всех вкладов")
-    public List<DepositDto> getAllDeposits() {
-        return depositService.getAllDeposits();
+    public ResponseEntity<?> getAllDeposits() {
+        try {
+            return ResponseEntity.ok().body(depositService.getAllDeposits());
+        } catch (FailedConvertToDtoException e) {
+            log.error("Ошибка {} при конвертации объектов в DTO.", e);
+            return ResponseEntity.badRequest().body("Не удалось конвертировать все объекты в DTO.");
+        }
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Просмотр вклада по ID", description = "Этот метод позволяет посмотреть информацию по вкладу по "
             + "ID вклада")
-    public DepositDto getDepositById(@RequestParam long id) {
-        return depositService.getDepositById(id);
+    public ResponseEntity<?> getDepositById(@RequestParam long id) {
+        try {
+            return ResponseEntity.ok().body(depositService.getDepositById(id));
+        } catch (FailedConvertToDtoException e) {
+            log.error("Ошибка {} при конвертации в DTO.", e);
+            return ResponseEntity.badRequest().body("Не удалось конвертировать объект в DTO.");
+        }
     }
 
     @GetMapping("/users/{id}")
     @Operation(summary = "Просмотр вклада или списка вкладов у пользователя по ID", description = "Этот метод позволяет " +
             "посмотреть информацию по вкладам у конкретного пользователя по ID пользователя")
-    public List<DepositDto> getDepositsByUserId(@RequestParam long id) {
-        return depositService.getDepositsByUserId(id);
+    public ResponseEntity<?> getDepositsByUserId(@RequestParam long id) {
+        try {
+            return ResponseEntity.ok().body(depositService.getDepositsByUserId(id));
+        } catch(UserNotFoundException | RuntimeException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping()
@@ -71,13 +98,25 @@ public class DepositController {
 
             return ResponseEntity.badRequest().body(errors);
         }
-        return ResponseEntity.ok().body(depositService.updateDeposit(depositDto));
+        try {
+            return ResponseEntity.ok().body(depositService.updateDeposit(depositDto));
+        }  catch(FailedConvertToDtoException e) {
+            log.error("не удалось конвертировать объект в DTO.");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch(DataAccessException e) {
+            log.error("Ошибка при сохранении объекта.");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление вклада", description = "Этот метод позволяет удалить вклад из базы данных по ID вклада")
     public String deleteDeposit(@RequestParam long id) {
-        return depositService.deleteDeposit(id);
+        try {
+            return depositService.deleteDeposit(id);
+        } catch (Exception e) {
+            log.error("Не удалось удалить вклад по ID: {}", id, e);
+            return "Вклад с ID " + id + " не удалось удалить.";
+        }
     }
-
 }
