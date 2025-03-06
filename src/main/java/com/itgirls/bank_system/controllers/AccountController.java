@@ -18,7 +18,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/accounts")
-@RequiredArgsConstructor
 @AllArgsConstructor
 @Slf4j
 @Tag(name = "Счета", description = "Управление счетами")
