@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class UserCreateDto {
 
     @Size(min = 3, max = 25)
-    @NotNull
+    @NotBlank(message = "Введите имя пользователя")
     private String name;
 
     @Size(min = 3, max = 25)
