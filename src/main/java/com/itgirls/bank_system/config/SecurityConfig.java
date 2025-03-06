@@ -33,6 +33,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
                                 .requestMatchers(HttpMethod.PUT, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
                                 .requestMatchers(HttpMethod.DELETE, "/accounts").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/deposits").hasAnyRole(Role.ADMIN.name(),
+                                        Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.PUT, "/deposits/{id}").hasAnyRole(Role.ADMIN.name(),
+                                        Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.GET, "/deposits").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/deposits/{id}").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
