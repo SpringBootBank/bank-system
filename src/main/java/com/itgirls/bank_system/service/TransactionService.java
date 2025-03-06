@@ -12,5 +12,5 @@ public interface TransactionService {
 
     List<TransactionDto> findAllTransactions();
 
-    Transactions updateAmountOfTransaction(TransactionDto transactionDto);
+    TransactionDto updateAmountOfTransaction(TransactionDto transactionDto);
 }

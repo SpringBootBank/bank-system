@@ -91,7 +91,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Transactional
-    public Transactions updateAmountOfTransaction(TransactionDto transactionDto) {
+    public TransactionDto updateAmountOfTransaction(TransactionDto transactionDto) {
         Transactions transaction = transactionRepository.findById(transactionDto.getId())
                 .orElseThrow(() -> new RuntimeException("Транзакция с id " + transactionDto.getId() + " не найдена"));
         Account account = accountRepository.findById(transactionDto.getBankUserId())
@@ -125,7 +125,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.save(account);
         log.info("Обновили баланс счета с id: {}", account.getId());
 
-        return transaction;
+        return new ObjectMapper().convertValue(transaction, TransactionDto.class);
     }
 
     public String deleteTransaction(Long id) {
