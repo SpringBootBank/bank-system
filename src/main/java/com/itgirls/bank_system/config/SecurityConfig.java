@@ -1,6 +1,10 @@
 package com.itgirls.bank_system.config;
 
 import com.itgirls.bank_system.enums.Role;
+import com.itgirls.bank_system.model.Account;
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,6 +29,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.PUT, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.DELETE, "/accounts").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/deposits").hasAnyRole(Role.ADMIN.name(),
                                         Role.CLIENT.name())
                                 .requestMatchers(HttpMethod.PUT, "/deposits/{id}").hasAnyRole(Role.ADMIN.name(),
@@ -41,5 +49,18 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addConverter(new Converter<Account, String>() {
+            @Override
+            public String convert(MappingContext<Account, String> context) {
+                Account account = context.getSource();
+                return account != null ? account.getAccountNumber() : null;
+            }
+        });
+        return modelMapper;
     }
 }

@@ -8,7 +8,7 @@ import com.itgirls.bank_system.model.Deposit;
 import com.itgirls.bank_system.model.Loan;
 import com.itgirls.bank_system.model.Transactions;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -22,7 +22,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserUpdateDto {
 
-    @NotBlank(message = "Введите id пользователя")
+    @NotNull
     private Long id;
 
     @Size(min = 3, max = 25)
