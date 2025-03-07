@@ -22,7 +22,6 @@ public class TransactionDto {
 
     private Long id;
 
-    @NotBlank(message = "Номер транзакции обязателен")
     @Size(min = 5, message = "Номер транзакции должен содержать не менее 5 символов")
     private String transactionNumber;
 
@@ -34,7 +33,6 @@ public class TransactionDto {
     @DecimalMin(value = "0.01")
     private BigDecimal transactionAmount;
 
-    @NotNull(message = "Время транзакции не может быть пустым")
     private LocalDateTime transactionTime;
 
     @NotNull(message = "Указание отправителя обязательно")
