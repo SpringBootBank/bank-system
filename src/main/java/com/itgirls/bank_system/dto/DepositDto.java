@@ -1,8 +1,10 @@
 package com.itgirls.bank_system.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.itgirls.bank_system.model.Account;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,11 +34,11 @@ public class DepositDto {
     private BigDecimal interestRateDeposit;
 
     @NotNull(message = "Введите дату начала депозита.")
-    @FutureOrPresent(message = "Дата начала депозита должна быть не раньше сегодняшней.")
+    //@FutureOrPresent(message = "Дата начала депозита должна быть не раньше сегодняшней.")
     private LocalDate startDateDeposit;
 
     @NotNull(message = "Введите дату окончания депозита.")
-    @Future(message = "Дата окончания депозита должна быть позднее даты начала депозита.")
+    //@Future(message = "Дата окончания депозита должна быть позднее даты начала депозита.")
     private LocalDate endDateDeposit;
 
     @NotBlank
@@ -44,8 +46,8 @@ public class DepositDto {
     private String statusDeposit;
 
     @NotNull(message = "Введите ID депозитного счёта.")
-    private AccountDto accountDeposit;
+    private AccountDto account;
 
     @NotNull(message = "Введите ID пользователя, на имя которого оформлен вклад.")
-    private UserDto userDeposit;
+    private UserDto user;
 }
