@@ -32,11 +32,11 @@ public class UserDto {
 
     private Role role;
 
-    private Set<Account> accounts;
+    private Set<AccountDto> accounts;
 
-    private Set<Deposit> deposits;
+    private Set<DepositDto> deposits;
 
-    private Set<Loan> loans;
+    private Set<LoanDto> loans;
 
-    private Set <Transactions> transactions;
+    private Set <TransactionDto> transactions;
 }
