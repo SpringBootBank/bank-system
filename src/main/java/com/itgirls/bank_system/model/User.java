@@ -1,12 +1,9 @@
 package com.itgirls.bank_system.model;
 
+import com.itgirls.bank_system.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import com.itgirls.bank_system.enums.Role;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Set;
 
@@ -29,7 +26,7 @@ public class User {
     @Column(name = "surname", nullable = false)
     private String surname;
 
-    @NotBlank
+    @Email
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -41,17 +38,14 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Account> accounts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Loan> loans;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Deposit> deposits;
 
-    @OneToMany(mappedBy = "bankUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Transactions> transactions;
 }

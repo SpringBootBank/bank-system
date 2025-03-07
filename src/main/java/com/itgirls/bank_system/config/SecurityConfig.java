@@ -20,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public  SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests((authorize) ->
@@ -37,7 +37,11 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/accounts/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/deposits").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.DELETE, "/deposits/{id}").hasRole(Role.ADMIN.name())  
+                                .requestMatchers(HttpMethod.DELETE, "/deposits/{id}").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/loans").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/loans/").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/loans").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/loans/{id}").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())

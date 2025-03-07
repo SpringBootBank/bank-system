@@ -26,9 +26,8 @@ public class TransactionDto {
     @Size(min = 5, message = "Номер транзакции должен содержать не менее 5 символов")
     private String transactionNumber;
 
-    @NotBlank(message = "Тип транзакции обязателен")
-    @Pattern(regexp = "^(INCOMING|OUTGOING)$",
-            message = "Тип транзакции должен быть:INCOMING или OUTGOING")
+    @NotNull(message = "Тип транзакции обязателен")
+    @Pattern(regexp = "^(INCOMING|OUTGOING)$", message = "Тип транзакции должен быть:INCOMING или OUTGOING")
     private String transactionType;
 
     @NotNull(message = "Сумма транзакции обязательна")
@@ -47,7 +46,3 @@ public class TransactionDto {
     @NotNull(message = "Указание пользователя обязательно")
     private Long bankUserId;
 }
-
-
-
-

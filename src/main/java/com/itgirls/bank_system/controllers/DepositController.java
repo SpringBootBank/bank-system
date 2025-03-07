@@ -1,7 +1,6 @@
 package com.itgirls.bank_system.controllers;
 
 import com.itgirls.bank_system.dto.DepositDto;
-import com.itgirls.bank_system.exception.DepositNotFoundException;
 import com.itgirls.bank_system.exception.FailedConvertToDtoException;
 import com.itgirls.bank_system.exception.UserNotFoundException;
 import com.itgirls.bank_system.service.DepositService;

@@ -1,8 +1,8 @@
 package com.itgirls.bank_system.model;
 
+import com.itgirls.bank_system.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
-import com.itgirls.bank_system.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
