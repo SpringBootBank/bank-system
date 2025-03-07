@@ -45,9 +45,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .transactionNumber("TXN-" + UUID.randomUUID())
                 .transactionType(TransactionType.valueOf(transactionDto.getTransactionType()))
                 .transactionAmount(transactionDto.getTransactionAmount())
-                .transactionTime(transactionDto.getTransactionTime() != null
-                          ? transactionDto.getTransactionTime()
-                        : LocalDateTime.now())
+                .transactionTime(LocalDateTime.now())
                 .senderAccount(sender)
                 .beneficiaryAccount(beneficiary)
                 .bankUser(user)
