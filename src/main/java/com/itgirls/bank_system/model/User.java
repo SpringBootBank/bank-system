@@ -51,7 +51,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Deposit> deposits;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bankUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Set<Transactions> transactions;
 }

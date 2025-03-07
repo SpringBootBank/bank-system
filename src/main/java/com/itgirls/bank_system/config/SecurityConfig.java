@@ -26,19 +26,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/login").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())       
                                 .requestMatchers(HttpMethod.POST, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.PUT, "/accounts").hasAnyRole(Role.ADMIN.name(),Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.DELETE, "/accounts").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.POST, "/deposits").hasAnyRole(Role.ADMIN.name(),
-                                        Role.CLIENT.name())
-                                .requestMatchers(HttpMethod.PUT, "/deposits/{id}").hasAnyRole(Role.ADMIN.name(),
-                                        Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.GET, "/transactions").hasRole(Role.ADMIN.name())        
+                                .requestMatchers(HttpMethod.POST, "/transactions").hasRole(Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.PUT, "/transactions/{id}").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/transactions/{id}").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/accounts/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/deposits").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.DELETE, "/deposits/{id}").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/deposits/{id}").hasRole(Role.ADMIN.name())  
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
