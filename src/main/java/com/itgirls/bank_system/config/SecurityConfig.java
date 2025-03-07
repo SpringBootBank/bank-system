@@ -26,9 +26,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/login").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())       
                                 .requestMatchers(HttpMethod.POST, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.PUT, "/users").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/transactions").hasRole(Role.ADMIN.name())        
+                                .requestMatchers(HttpMethod.POST, "/transactions").hasRole(Role.CLIENT.name())
+                                .requestMatchers(HttpMethod.PUT, "/transactions/{id}").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/transactions/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/accounts/{id}").hasRole(Role.ADMIN.name())
@@ -36,7 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/deposits/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/loans").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/loans/").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.POST, "/loans/").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/loans").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/loans/{id}").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
