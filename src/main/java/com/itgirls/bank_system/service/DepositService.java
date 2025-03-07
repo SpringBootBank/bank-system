@@ -4,11 +4,12 @@ import com.itgirls.bank_system.dto.DepositDto;
 import com.itgirls.bank_system.exception.FailedConvertToDtoException;
 import com.itgirls.bank_system.exception.UserNotFoundException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
 public interface DepositService {
-    DepositDto createDeposit(DepositDto depositDto) throws DataAccessException, FailedConvertToDtoException;
+    DepositDto createDeposit(DepositDto depositDto, Authentication authentication) throws DataAccessException, FailedConvertToDtoException;
 
     List<DepositDto> getAllDeposits() throws FailedConvertToDtoException;
 
