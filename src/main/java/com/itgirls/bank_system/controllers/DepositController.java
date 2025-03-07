@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class DepositController {
 
     @PostMapping()
     @Operation(summary = "Создание вклада", description = "Этот метод позволяет создать новый вклад.")
-    public ResponseEntity<?> createDeposit(@Valid @RequestBody DepositDto depositDto, BindingResult result) {
+    public ResponseEntity<?> createDeposit(@Valid @RequestBody DepositDto depositDto, BindingResult result, Authentication authentication) {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             result.getAllErrors().forEach(objectError -> {
@@ -42,7 +43,7 @@ public class DepositController {
             return ResponseEntity.badRequest().body(errors);
         }
         try {
-            return ResponseEntity.ok().body(depositService.createDeposit(depositDto));
+            return ResponseEntity.ok().body(depositService.createDeposit(depositDto, authentication));
         } catch (DataAccessException | FailedConvertToDtoException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());

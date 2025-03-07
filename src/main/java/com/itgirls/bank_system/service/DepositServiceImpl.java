@@ -4,6 +4,7 @@ import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.dto.DepositDto;
 import com.itgirls.bank_system.dto.UserDto;
 import com.itgirls.bank_system.enums.DepositStatus;
+import com.itgirls.bank_system.enums.Role;
 import com.itgirls.bank_system.exception.DepositNotFoundException;
 import com.itgirls.bank_system.exception.FailedConvertToDtoException;
 import com.itgirls.bank_system.exception.UserNotFoundException;
@@ -18,6 +19,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,32 +41,42 @@ public class DepositServiceImpl implements DepositService {
 
     @SneakyThrows
     @Override
-    public DepositDto createDeposit(DepositDto depositDto) throws DataAccessException, FailedConvertToDtoException {
+    public DepositDto createDeposit(DepositDto depositDto, Authentication authentication) throws DataAccessException, FailedConvertToDtoException {
         log.info("Открытие нового вклада.");
         Account account = accountRepository.findById(depositDto.getAccount().getId())
                 .orElseThrow(() -> {
                     log.warn("Счет с таким ID не найден.");
                     return new NoSuchElementException("Счет с таким ID не найден.");
                 });
-        User user = userRepository.findById(depositDto.getUser().getId())
-                .orElseThrow(() -> {
+        User user = new User();
+        try {
+            user = userRepository.findUserByEmail(authentication.getName());
+        } catch (NoSuchElementException e) {
                     log.warn("Пользователь с таким ID не найден.");
-                    return new UserNotFoundException("Пользователь с таким ID не найден.");
-                });
+                    throw new UserNotFoundException("Пользователь с таким ID не найден.");
+                }
 
         Deposit newDeposit = new Deposit();
-        newDeposit.setAmountDeposit(depositDto.getAmountDeposit());
-        newDeposit.setInterestRateDeposit(depositDto.getInterestRateDeposit());
-        newDeposit.setStartDateDeposit(depositDto.getStartDateDeposit());
-        newDeposit.setEndDateDeposit(depositDto.getEndDateDeposit());
-        newDeposit.setStatusDeposit(DepositStatus.valueOf(depositDto.getStatusDeposit()));
-        newDeposit.setAccount(account);
-        newDeposit.setUser(user);
 
-        log.info("Сохранение нового вклада");
-        depositRepository.save(newDeposit);
-        log.info("Конвертация объекта в DTO");
-        return convertDepositToDto(newDeposit);
+        if(user.getRole() != Role.ADMIN) {
+            newDeposit.setAmountDeposit(depositDto.getAmountDeposit());
+            newDeposit.setInterestRateDeposit(depositDto.getInterestRateDeposit());
+            newDeposit.setStartDateDeposit(depositDto.getStartDateDeposit());
+            newDeposit.setEndDateDeposit(depositDto.getEndDateDeposit());
+            newDeposit.setStatusDeposit(DepositStatus.valueOf(depositDto.getStatusDeposit()));
+            newDeposit.setAccount(account);
+            newDeposit.setUser(user);
+
+
+            log.info("Сохранение нового вклада");
+            depositRepository.save(newDeposit);
+            log.info("Конвертация объекта в DTO");
+            return convertDepositToDto(newDeposit);
+        } else {
+            System.out.println("Введите пользователя, на имя которого открывается вклад.");
+            throw new IllegalArgumentException("При создании вклада админом нужно " +
+                    "указать пользователя на имя которого открывается вклад.");
+        }
     }
 
     @Override
@@ -156,7 +168,7 @@ public class DepositServiceImpl implements DepositService {
                     log.warn("Вклад с таким ID не найден.");
                     return new DepositNotFoundException("Вклад с таким ID не найден.");
                 });
-            depositRepository.delete(deposit);
+            depositRepository.deleteById(id);
             log.info("Вклад с ID {} успешно удален.", id);
             return "Вклад с ID " + id + " был удален.";
     }
