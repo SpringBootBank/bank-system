@@ -1,6 +1,7 @@
 package com.itgirls.bank_system.controllers;
 
 import com.itgirls.bank_system.dto.DepositDto;
+import com.itgirls.bank_system.exception.DepositNotFoundException;
 import com.itgirls.bank_system.exception.FailedConvertToDtoException;
 import com.itgirls.bank_system.exception.UserNotFoundException;
 import com.itgirls.bank_system.service.DepositService;
@@ -73,7 +74,7 @@ public class DepositController {
     public ResponseEntity<?> getDepositById(@PathVariable long id) {
         try {
             return ResponseEntity.ok().body(depositService.getDepositById(id));
-        } catch (FailedConvertToDtoException e) {
+        } catch (FailedConvertToDtoException | DepositNotFoundException e) {
             log.error("Ошибка {} при конвертации в DTO.", e);
             return ResponseEntity.badRequest().body("Не удалось конвертировать объект в DTO.");
         }
@@ -94,7 +95,8 @@ public class DepositController {
     @PutMapping()
     @Operation(summary = "Обновление данных о вкладе", description = "Этот метод позволяет обновить информацию о вкладе" +
             " по ID вклада")
-    public ResponseEntity<?> updateDeposit(@Valid @RequestBody DepositDto depositDto, BindingResult result) {
+    public ResponseEntity<?> updateDeposit(@Valid @RequestBody DepositDto depositDto, BindingResult result,
+                                           Authentication authentication) {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             result.getAllErrors().forEach(objectError -> {
@@ -105,21 +107,21 @@ public class DepositController {
             return ResponseEntity.badRequest().body(errors);
         }
         try {
-            return ResponseEntity.ok().body(depositService.updateDeposit(depositDto));
+            return ResponseEntity.ok().body(depositService.updateDeposit(depositDto, authentication));
         }  catch(FailedConvertToDtoException e) {
-            log.error("не удалось конвертировать объект в DTO.");
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch(DataAccessException e) {
-            log.error("Ошибка при сохранении объекта.");
+        } catch(DataAccessException | DepositNotFoundException | UserNotFoundException e) {
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление вклада", description = "Этот метод позволяет удалить вклад из базы данных по ID вклада")
-    public String deleteDeposit(@PathVariable long id) {
+    public String deleteDeposit(@PathVariable long id, Authentication authentication) {
         try {
-            return depositService.deleteDeposit(id);
+            return depositService.deleteDeposit(id, authentication);
         } catch (Exception e) {
             log.error("Не удалось удалить вклад по ID: {}", id, e);
             return "Вклад с ID " + id + " не удалось удалить.";
