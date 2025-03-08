@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,7 +32,7 @@ public class AccountController {
             log.info("Создание нового счета...");
             AccountDto createdAccount = accountService.createAccount(accountDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             log.error("Ошибка при создании счета", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -41,12 +42,13 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<List<AccountDto>> getAllAccounts(@RequestParam(required = false) String accountNumber,
                                                            @RequestParam(required = false) BigDecimal minBalance,
-                                                           @RequestParam(required = false) BigDecimal maxBalance) {
+                                                           @RequestParam(required = false) BigDecimal maxBalance,
+                                                           @RequestParam(required = false) String accountType) {
         try {
             log.info("Получение всех счетов с фильтрами...");
-            List<AccountDto> accounts = accountService.getFilteredAccounts(accountNumber, minBalance, maxBalance);
+            List<AccountDto> accounts = accountService.getFilteredAccounts(accountNumber, minBalance, maxBalance, accountType);
             return ResponseEntity.ok(accounts);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             log.error("Ошибка при получении счетов", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -59,8 +61,21 @@ public class AccountController {
             log.info("Получение счета с ID: {}", id);
             AccountDto accountDto = accountService.getAccountById(id);
             return ResponseEntity.ok(accountDto);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             log.error("Ошибка при получении счета с ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @Operation(summary = "Получить счета по ID пользователя")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AccountDto>> getAccountsByUserId(@PathVariable Long userId) {
+        try {
+            log.info("Получение счетов для пользователя с ID: {}", userId);
+            List<AccountDto> accounts = accountService.getAccountsByUserId(userId);
+            return ResponseEntity.ok(accounts);
+        } catch (ResponseStatusException e) {
+            log.error("Ошибка при получении счетов для пользователя с ID: {}", userId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -72,7 +87,7 @@ public class AccountController {
             log.info("Обновление счета с ID: {}", id);
             AccountDto updatedAccount = accountService.updateAccount(id, accountDto);
             return ResponseEntity.ok(updatedAccount);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             log.error("Ошибка при обновлении счета с ID: {}", id, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -85,7 +100,7 @@ public class AccountController {
             log.info("Удаление счета с ID: {}", id);
             accountService.deleteAccount(id);
             return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             log.error("Ошибка при удалении счета с ID: {}", id, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
