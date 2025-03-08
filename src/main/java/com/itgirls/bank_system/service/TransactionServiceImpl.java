@@ -1,6 +1,5 @@
 package com.itgirls.bank_system.service;
 
-
 import com.itgirls.bank_system.dto.TransactionDto;
 import com.itgirls.bank_system.enums.TransactionType;
 import com.itgirls.bank_system.model.Account;
@@ -10,9 +9,13 @@ import com.itgirls.bank_system.repository.TransactionRepository;
 import com.itgirls.bank_system.repository.UserRepository;
 import com.itgirls.bank_system.repository.AccountRepository;
 import java.time.LocalDateTime;
+
+import com.itgirls.bank_system.specification.TransactionSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -151,10 +154,29 @@ public class TransactionServiceImpl implements TransactionService {
                 .bankUserId(transaction.getBankUser().getId())
                 .build();
     }
-    private List<TransactionDto> convertTransactionToDto(List<Transactions> transactions) {
+
+    public List<TransactionDto> convertTransactionToDto(List<Transactions> transactions) {
         return transactions.stream()
                 .map(this::convertTransactionToDto)
                 .toList();
+    }
+
+    public List<Transactions> getTransactionByTypeOrSenderOrBeneficiary(String type, Long senderAccountId,
+                                                                        Long beneficiaryAccountId) {
+        Specification<Transactions> specification = Specification.where(null);
+        log.info("Фильтрация: type={}, senderAccountId={}, beneficiaryAccountId={}", type, senderAccountId, beneficiaryAccountId);
+        if (StringUtils.isNotEmpty(type)) {
+            specification = specification.and(TransactionSpecification.hasType(type));
+        }
+        if (senderAccountId != null) {
+            specification = specification.and(TransactionSpecification.hasSenderId(senderAccountId));
+        }
+        if (beneficiaryAccountId != null) {
+            specification = specification.and(TransactionSpecification.hasBeneficiaryId(beneficiaryAccountId));
+        }
+        List<Transactions> transactions =transactionRepository.findAll(specification);
+                log.info("После фильтрации найдено {} транзакций", transactions.size());
+        return transactions;
     }
 }
 

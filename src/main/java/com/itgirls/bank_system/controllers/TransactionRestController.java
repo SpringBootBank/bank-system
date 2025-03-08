@@ -1,11 +1,14 @@
 package com.itgirls.bank_system.controllers;
 
 import com.itgirls.bank_system.dto.TransactionDto;
+import com.itgirls.bank_system.model.Transactions;
 import com.itgirls.bank_system.service.TransactionServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +17,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/transactions")
 @Tag(name = "транзакции", description = "управление транзакциями")
 public class TransactionRestController {
@@ -87,11 +92,20 @@ public class TransactionRestController {
             return "Удалить транзакцию невозможно";
         }
     }
+
+    @GetMapping("/filter")
+    public List<TransactionDto> getAllTransactions(@RequestParam(required = false) String type,
+                                                   @RequestParam(required = false) Long senderAccountId,
+                                                   @RequestParam(required = false) Long beneficiaryAccountId) {
+        log.info("Фильтрация: type={}, senderAccountId={}, beneficiaryAccountId={}", type, senderAccountId, beneficiaryAccountId);
+        if (StringUtils.isEmpty(type) && senderAccountId == null && beneficiaryAccountId == null) {
+            return transactionServiceImpl.findAllTransactions();
+        } else {
+            List<Transactions> transaction = transactionServiceImpl.getTransactionByTypeOrSenderOrBeneficiary(type,
+                    senderAccountId, beneficiaryAccountId);
+            log.info("Найдено {} транзакций перед конвертацией", transaction.size());
+            return transactionServiceImpl.convertTransactionToDto(transaction);
+
+        }
+    }
 }
-
-
-
-
-
-
-
