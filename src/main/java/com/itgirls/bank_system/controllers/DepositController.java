@@ -119,12 +119,12 @@ public class DepositController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление вклада", description = "Этот метод позволяет удалить вклад из базы данных по ID вклада")
-    public String deleteDeposit(@PathVariable long id, Authentication authentication) {
+    public ResponseEntity <String> deleteDeposit(@PathVariable long id, Authentication authentication) {
         try {
-            return depositService.deleteDeposit(id, authentication);
+            return ResponseEntity.ok().body(depositService.deleteDeposit(id, authentication));
         } catch (Exception e) {
             log.error("Не удалось удалить вклад по ID: {}", id, e);
-            return "Вклад с ID " + id + " не удалось удалить.";
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
