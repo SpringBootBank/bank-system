@@ -1,8 +1,6 @@
 package com.itgirls.bank_system.service;
 
-import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.dto.DepositDto;
-import com.itgirls.bank_system.dto.UserDto;
 import com.itgirls.bank_system.enums.DepositStatus;
 import com.itgirls.bank_system.enums.Role;
 import com.itgirls.bank_system.exception.DepositNotFoundException;
@@ -15,7 +13,6 @@ import com.itgirls.bank_system.repository.AccountRepository;
 import com.itgirls.bank_system.repository.DepositRepository;
 import com.itgirls.bank_system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
@@ -30,6 +27,8 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static com.itgirls.bank_system.mapper.EntityToDtoMapper.convertDepositToDto;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -39,10 +38,9 @@ public class DepositServiceImpl implements DepositService {
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
 
-    @SneakyThrows
     @Override
     public DepositDto createDeposit(DepositDto depositDto, Authentication authentication)
-            throws NoSuchElementException,UserNotFoundException, DataAccessException, FailedConvertToDtoException {
+            throws DataAccessException, FailedConvertToDtoException, UserNotFoundException {
         log.info("Открытие нового вклада.");
         Account account = accountRepository.findById(depositDto.getAccount().getId())
                 .orElseThrow(() -> {
@@ -60,12 +58,14 @@ public class DepositServiceImpl implements DepositService {
 
         Deposit newDeposit = new Deposit();
 
-        if(user.getRole() == Role.ADMIN) {
+        if (user.getRole() == Role.ADMIN) {
             System.out.println("Введите пользователя, на имя которого открывается вклад.");
             throw new IllegalArgumentException("При создании вклада админом нужно " +
                     "указать пользователя на имя которого открывается вклад.");
         } else if (!user.getId().equals(account.getUser().getId())) {
             throw new IllegalStateException("Этот счет привязан к другому пользователю.");
+        } else if (account.getDeposit() != null) {
+            throw new IllegalStateException("Этот счет уже привязан к другому вкладу.");
         } else {
             newDeposit.setAmountDeposit(depositDto.getAmountDeposit());
             newDeposit.setInterestRateDeposit(depositDto.getInterestRateDeposit());
@@ -77,7 +77,7 @@ public class DepositServiceImpl implements DepositService {
 
             log.info("Сохранение нового вклада");
             depositRepository.save(newDeposit);
-            log.info("Конвертация объекта в DTO");
+            log.info("Новый вклад с ID: {} успешно сохранен.", newDeposit.getId());
             return convertDepositToDto(newDeposit);
         }
     }
@@ -103,9 +103,8 @@ public class DepositServiceImpl implements DepositService {
         return depositDtoList;
     }
 
-    @SneakyThrows
     @Override
-    public DepositDto getDepositById(Long id) throws FailedConvertToDtoException {
+    public DepositDto getDepositById(Long id) throws FailedConvertToDtoException, DepositNotFoundException {
         log.info("Поиск вклада по ID.");
         Deposit deposit = depositRepository.findById(id)
                 .orElseThrow(() -> {
@@ -116,8 +115,7 @@ public class DepositServiceImpl implements DepositService {
         return convertDepositToDto(deposit);
     }
 
-    @SneakyThrows
-    public List<DepositDto> getDepositsByUserId(Long id) {
+    public List<DepositDto> getDepositsByUserId(Long id) throws UserNotFoundException {
         log.info("Поиск вклада(ов) по ID пользователя.");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> {
@@ -140,31 +138,45 @@ public class DepositServiceImpl implements DepositService {
         }
     }
 
-    @SneakyThrows
     @Override
     @Transactional
-    public DepositDto updateDeposit(DepositDto depositDto) throws DataAccessException, FailedConvertToDtoException {
-        log.info("Внесение изменений во вклад с ID: {}", depositDto.getId());
+    public DepositDto updateDeposit(DepositDto depositDto, Authentication authentication)
+            throws DataAccessException, DepositNotFoundException, UserNotFoundException, FailedConvertToDtoException {
+
         Deposit deposit = depositRepository.findById(depositDto.getId())
                 .orElseThrow(() -> {
                     log.warn("Вклад с таким ID не найден.");
                     return new DepositNotFoundException("Вклад с таким ID не найден.");
                 });
 
-        deposit.setStatusDeposit(DepositStatus.valueOf(depositDto.getStatusDeposit()));
-        deposit.setAmountDeposit(depositDto.getAmountDeposit());
-        deposit.setInterestRateDeposit(depositDto.getInterestRateDeposit());
-        deposit.setStartDateDeposit(depositDto.getStartDateDeposit());
-        deposit.setEndDateDeposit(depositDto.getEndDateDeposit());
+        User user;
+        try {
+            user = userRepository.findUserByEmail(authentication.getName());
+        } catch (NoSuchElementException e) {
+            log.warn("Пользователь с таким ID не найден.");
+            throw new UserNotFoundException("Пользователь с таким ID не найден.");
+        }
 
-        log.info("Вклад с ID {} успешно изменен.", depositDto.getId());
-        depositRepository.save(deposit);
-        return convertDepositToDto(deposit);
+        if (user.getRole() != Role.ADMIN || !user.getId().equals(deposit.getUser().getId())) {
+            throw new IllegalStateException("У вас нет доступа к изменению этого вклада.");
+        } else {
+            log.info("Внесение изменений во вклад с ID: {}", depositDto.getId());
+            deposit.setStatusDeposit(DepositStatus.valueOf(depositDto.getStatusDeposit()));
+            deposit.setAmountDeposit(depositDto.getAmountDeposit());
+            deposit.setInterestRateDeposit(depositDto.getInterestRateDeposit());
+            deposit.setStartDateDeposit(depositDto.getStartDateDeposit());
+            deposit.setEndDateDeposit(depositDto.getEndDateDeposit());
+
+            log.info("Вклад с ID {} успешно изменен.", depositDto.getId());
+            depositRepository.save(deposit);
+            log.info("Изменения успешно сохранены.");
+            return convertDepositToDto(deposit);
+        }
     }
 
-    @SneakyThrows
     @Override
-    public String deleteDeposit(Long id) throws Exception {
+    public String deleteDeposit(Long id, Authentication authentication)
+            throws DepositNotFoundException, UserNotFoundException {
         log.info("Удаление вклада с ID: {}", id);
         Deposit deposit = depositRepository.findById(id)
                 .orElseThrow(() -> {
@@ -172,54 +184,35 @@ public class DepositServiceImpl implements DepositService {
                     return new DepositNotFoundException("Вклад с таким ID не найден.");
                 });
 
-        int depositsBeforeDelete = Math.toIntExact(depositRepository.count());
-        log.info("Кол-во вкладов до удаления: {}", depositsBeforeDelete);
-
-        deposit.getUser().getDeposits().remove(deposit);
-        deposit.getAccount().setDeposit(null);
-        depositRepository.deleteById(id);
-        depositRepository.flush();
-
-        int depositsAfterDelete = Math.toIntExact(depositRepository.count());
-        log.info("Кол-во вкладов после удаления: {}", depositsAfterDelete);
-
-        if(depositsBeforeDelete == depositsAfterDelete) {
-            log.error("Не удалось удалить вклад с ID {} из БД.", id);
-            return "Не удалось удалить вклад с ID " + id + " из БД.";
-        } else {
-            log.info("Вклад с ID {} успешно удален.", id);
-            return "Вклад с ID " + id + " был удален.";
+        User user;
+        try {
+            user = userRepository.findUserByEmail(authentication.getName());
+        } catch (NoSuchElementException e) {
+            log.warn("Пользователь с таким ID не найден.");
+            throw new UserNotFoundException("Пользователь с таким ID не найден.");
         }
-    }
 
-    private DepositDto convertDepositToDto(Deposit deposit) {
-        log.debug("Трансформация вклада с ID {} в DTO.", deposit.getId());
-        return DepositDto.builder()
-                .id(deposit.getId())
-                .account(convertAccountToDto(deposit.getAccount()))
-                .user(convertUserToDto(deposit.getUser()))
-                .amountDeposit(deposit.getAmountDeposit())
-                .startDateDeposit(deposit.getStartDateDeposit())
-                .endDateDeposit(deposit.getEndDateDeposit())
-                .interestRateDeposit(deposit.getInterestRateDeposit())
-                .statusDeposit(String.valueOf(deposit.getStatusDeposit()))
-                .build();
-    }
+        if (user.getRole() != Role.ADMIN || !user.getId().equals(deposit.getUser().getId())) {
+            throw new IllegalStateException("У вас нет доступа к изменению этого вклада.");
+        } else {
+            int depositsBeforeDelete = Math.toIntExact(depositRepository.count());
+            log.info("Кол-во вкладов до удаления: {}", depositsBeforeDelete);
 
-    private UserDto convertUserToDto(User user) {
-        log.debug("Трансформация пользователя с ID {} в DTO.", user.getId());
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .surname(user.getSurname())
-                .build();
-    }
+            deposit.getUser().getDeposits().remove(deposit);
+            deposit.getAccount().setDeposit(null);
+            depositRepository.deleteById(id);
+            depositRepository.flush();
 
-    private AccountDto convertAccountToDto(Account account) {
-        log.debug("Трансформация счета с ID {} в DTO.", account.getId());
-        return AccountDto.builder()
-                .id(account.getId())
-                .accountNumber(account.getAccountNumber())
-                .build();
+            int depositsAfterDelete = Math.toIntExact(depositRepository.count());
+            log.info("Кол-во вкладов после удаления: {}", depositsAfterDelete);
+
+            if (depositsBeforeDelete == depositsAfterDelete) {
+                log.error("Не удалось удалить вклад с ID {} из БД.", id);
+                return "Не удалось удалить вклад с ID " + id + " из БД.";
+            } else {
+                log.info("Вклад с ID {} успешно удален.", id);
+                return "Вклад с ID " + id + " был удален.";
+            }
+        }
     }
 }
