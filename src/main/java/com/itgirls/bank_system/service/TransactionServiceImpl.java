@@ -9,6 +9,7 @@ import com.itgirls.bank_system.model.User;
 import com.itgirls.bank_system.repository.TransactionRepository;
 import com.itgirls.bank_system.repository.UserRepository;
 import com.itgirls.bank_system.repository.AccountRepository;
+import java.time.LocalDateTime;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +42,10 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
         Transactions transaction = Transactions.builder()
+                .transactionNumber("TXN-" + UUID.randomUUID())
                 .transactionType(TransactionType.valueOf(transactionDto.getTransactionType()))
                 .transactionAmount(transactionDto.getTransactionAmount())
-                .transactionTime(transactionDto.getTransactionTime())
+                .transactionTime(LocalDateTime.now())
                 .senderAccount(sender)
                 .beneficiaryAccount(beneficiary)
                 .bankUser(user)

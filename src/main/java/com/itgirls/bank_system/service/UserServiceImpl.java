@@ -1,17 +1,25 @@
 package com.itgirls.bank_system.service;
 
-import com.itgirls.bank_system.dto.UserCreateDto;
-import com.itgirls.bank_system.dto.UserDto;
-import com.itgirls.bank_system.dto.UserUpdateDto;
-import com.itgirls.bank_system.model.User;
+import com.itgirls.bank_system.dto.*;
+import com.itgirls.bank_system.enums.TransactionType;
+import com.itgirls.bank_system.model.*;
 import com.itgirls.bank_system.repository.UserRepository;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +31,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -95,7 +106,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsById(id)) {
             try {
                 userRepository.deleteById(id);
-                return "Пользователь с идентификаторо м" + id + " успешно удален";
+                return "Пользователь с идентификатором " + id + " успешно удален";
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -109,10 +120,53 @@ public class UserServiceImpl implements UserService {
                 .role(user.getRole())
                 .name(user.getName())
                 .surname(user.getSurname())
-                .accounts(user.getAccounts())
-                .deposits(user.getDeposits())
-                .loans(user.getLoans())
-                .transactions(user.getTransactions())
+                .accounts(user.getAccounts().stream().map(this::convertAccountToDto).collect(Collectors.toSet()))
+                .deposits(user.getDeposits().stream().map(this::convertDepositToDto).collect(Collectors.toSet()))
+                .loans(user.getLoans().stream().map(this::convertLoanToDto).collect(Collectors.toSet()))
+                .transactions(user.getTransactions().stream().map(this::convertTransactionToDto).collect(Collectors.toSet()))
+                .build();
+    }
+
+
+    private AccountDto convertAccountToDto(Account account) {
+        AccountDto accountDto = AccountDto.builder()
+                .id(account.getId())
+                .accountNumber(account.getAccountNumber())
+                .type(account.getType().name())
+                .build();
+        return accountDto;
+    }
+
+    private DepositDto convertDepositToDto(Deposit deposit) {
+        return DepositDto.builder()
+                .id(deposit.getId())
+                .statusDeposit(deposit.getStatusDeposit().name())
+                .interestRateDeposit(deposit.getInterestRateDeposit())
+                .startDateDeposit(deposit.getStartDateDeposit())
+                .endDateDeposit(deposit.getEndDateDeposit())
+                .build();
+    }
+
+    private LoanDto convertLoanToDto(Loan loan) {
+        return LoanDto.builder()
+                .id(loan.getId())
+                .statusLoan(loan.getStatusLoan().name())
+                .amountLoan((loan.getAmountLoan()))
+                .monthlyPayment(loan.getMonthlyPayment())
+                .startDateLoan(loan.getStartDateLoan())
+                .endDateLoan(loan.getEndDateLoan())
+                .build();
+    }
+
+    private TransactionDto convertTransactionToDto(Transactions transactions) {
+        return TransactionDto.builder()
+                .id(transactions.getId())
+                .transactionNumber(transactions.getTransactionNumber())
+                .transactionType(transactions.getTransactionType().name())
+                .transactionAmount(transactions.getTransactionAmount())
+                .transactionTime(transactions.getTransactionTime())
+                .senderAccountId(transactions.getSenderAccount().getId())
+                .beneficiaryAccountId(transactions.getBeneficiaryAccount().getId())
                 .build();
     }
 }
