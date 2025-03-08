@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(userCreateDto.getRole());
         user.setPassword(passwordEncode);
         userRepository.save(user);
-        return convertUserToDto(user);
+        return convertNewUserToDto(user);
     }
 
     @Override
@@ -111,6 +111,16 @@ public class UserServiceImpl implements UserService {
                 throw new RuntimeException(e);
             }
         } else return "Пользователь с идентификатором " + id + " не найден";
+    }
+
+    private UserDto convertNewUserToDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .build();
     }
 
     private UserDto convertUserToDto(User user) {
