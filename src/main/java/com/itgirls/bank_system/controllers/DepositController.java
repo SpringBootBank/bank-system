@@ -44,6 +44,12 @@ public class DepositController {
         }
         try {
             return ResponseEntity.ok().body(depositService.createDeposit(depositDto, authentication));
+        } catch (NoSuchElementException | UserNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch(IllegalArgumentException | IllegalStateException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (DataAccessException | FailedConvertToDtoException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());

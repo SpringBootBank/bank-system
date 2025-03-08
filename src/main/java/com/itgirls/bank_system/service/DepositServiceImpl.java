@@ -41,24 +41,32 @@ public class DepositServiceImpl implements DepositService {
 
     @SneakyThrows
     @Override
-    public DepositDto createDeposit(DepositDto depositDto, Authentication authentication) throws DataAccessException, FailedConvertToDtoException {
+    public DepositDto createDeposit(DepositDto depositDto, Authentication authentication)
+            throws NoSuchElementException,UserNotFoundException, DataAccessException, FailedConvertToDtoException {
         log.info("Открытие нового вклада.");
         Account account = accountRepository.findById(depositDto.getAccount().getId())
                 .orElseThrow(() -> {
                     log.warn("Счет с таким ID не найден.");
-                    return new NoSuchElementException("Счет с таким ID не найден.");
+                    throw new NoSuchElementException("Счет с таким ID не найден.");
                 });
-        User user = new User();
+
+        User user;
         try {
             user = userRepository.findUserByEmail(authentication.getName());
         } catch (NoSuchElementException e) {
-                    log.warn("Пользователь с таким ID не найден.");
-                    throw new UserNotFoundException("Пользователь с таким ID не найден.");
-                }
+            log.warn("Пользователь с таким ID не найден.");
+            throw new UserNotFoundException("Пользователь с таким ID не найден.");
+        }
 
         Deposit newDeposit = new Deposit();
 
-        if(user.getRole() != Role.ADMIN) {
+        if(user.getRole() == Role.ADMIN) {
+            System.out.println("Введите пользователя, на имя которого открывается вклад.");
+            throw new IllegalArgumentException("При создании вклада админом нужно " +
+                    "указать пользователя на имя которого открывается вклад.");
+        } else if (!user.getId().equals(account.getUser().getId())) {
+            throw new IllegalStateException("Этот счет привязан к другому пользователю.");
+        } else {
             newDeposit.setAmountDeposit(depositDto.getAmountDeposit());
             newDeposit.setInterestRateDeposit(depositDto.getInterestRateDeposit());
             newDeposit.setStartDateDeposit(depositDto.getStartDateDeposit());
@@ -67,15 +75,10 @@ public class DepositServiceImpl implements DepositService {
             newDeposit.setAccount(account);
             newDeposit.setUser(user);
 
-
             log.info("Сохранение нового вклада");
             depositRepository.save(newDeposit);
             log.info("Конвертация объекта в DTO");
             return convertDepositToDto(newDeposit);
-        } else {
-            System.out.println("Введите пользователя, на имя которого открывается вклад.");
-            throw new IllegalArgumentException("При создании вклада админом нужно " +
-                    "указать пользователя на имя которого открывается вклад.");
         }
     }
 
@@ -168,9 +171,25 @@ public class DepositServiceImpl implements DepositService {
                     log.warn("Вклад с таким ID не найден.");
                     return new DepositNotFoundException("Вклад с таким ID не найден.");
                 });
-            depositRepository.deleteById(id);
+
+        int depositsBeforeDelete = Math.toIntExact(depositRepository.count());
+        log.info("Кол-во вкладов до удаления: {}", depositsBeforeDelete);
+
+        deposit.getUser().getDeposits().remove(deposit);
+        deposit.getAccount().setDeposit(null);
+        depositRepository.deleteById(id);
+        depositRepository.flush();
+
+        int depositsAfterDelete = Math.toIntExact(depositRepository.count());
+        log.info("Кол-во вкладов после удаления: {}", depositsAfterDelete);
+
+        if(depositsBeforeDelete == depositsAfterDelete) {
+            log.error("Не удалось удалить вклад с ID {} из БД.", id);
+            return "Не удалось удалить вклад с ID " + id + " из БД.";
+        } else {
             log.info("Вклад с ID {} успешно удален.", id);
             return "Вклад с ID " + id + " был удален.";
+        }
     }
 
     private DepositDto convertDepositToDto(Deposit deposit) {
