@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 
 public interface DepositService {
-    DepositDto createDeposit(DepositDto depositDto, Authentication authentication) throws DataAccessException, FailedConvertToDtoException;
+    DepositDto createDeposit(DepositDto depositDto, Authentication authentication) throws DataAccessException, FailedConvertToDtoException, UserNotFoundException;
 
     List<DepositDto> getAllDeposits() throws FailedConvertToDtoException;
 
