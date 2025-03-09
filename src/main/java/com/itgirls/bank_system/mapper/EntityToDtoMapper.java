@@ -2,9 +2,11 @@ package com.itgirls.bank_system.mapper;
 
 import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.dto.DepositDto;
+import com.itgirls.bank_system.dto.LoanDto;
 import com.itgirls.bank_system.dto.UserDto;
 import com.itgirls.bank_system.model.Account;
 import com.itgirls.bank_system.model.Deposit;
+import com.itgirls.bank_system.model.Loan;
 import com.itgirls.bank_system.model.User;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +41,24 @@ public class EntityToDtoMapper {
         return AccountDto.builder()
                 .id(account.getId())
                 .accountNumber(account.getAccountNumber())
+                .build();
+    }
+
+    public static LoanDto convertLoanEntityToDto(Loan loan) {
+        log.debug("Трансформация кредито с ID {} в DTO.", loan.getId());
+        return LoanDto.builder()
+                .id(loan.getId())
+                .amountLoan(loan.getAmountLoan())
+                .interestRateLoan(loan.getInterestRateLoan())
+                .startDateLoan(loan.getStartDateLoan())
+                .endDateLoan(loan.getEndDateLoan())
+                .monthlyPayment(loan.getMonthlyPayment())
+                .statusLoan(loan.getStatusLoan().name())
+                .accountId(loan.getAccount().getId())
+                .accountNumber(loan.getAccount().getAccountNumber())
+                .userId(loan.getUser().getId())
+                .userName(loan.getUser().getName())
+                .userSurname(loan.getUser().getSurname())
                 .build();
     }
 }
