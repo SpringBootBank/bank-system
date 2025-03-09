@@ -30,6 +30,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto addNewUser(UserCreateDto userCreateDto) {
         log.info("Создание нового пользователя");
+        if (userRepository.existsByEmail(userCreateDto.getEmail())) {
+            log.error("Пользователь с адресом {} уже зарегистрирован", userCreateDto.getEmail());
+            throw new RuntimeException("Пользователь с таким email уже зарегисрирован");
+        }
         try {
             String passwordEncode = passwordEncoder.encode(userCreateDto.getPassword());
             User user = new User();
@@ -146,6 +150,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDto convertNewUserToDto(User user) {
+        if (user == null) {
+            return null;
+        }
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -156,6 +163,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDto convertUserToDto(User user) {
+        if (user == null) {
+            return null;
+        }
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
