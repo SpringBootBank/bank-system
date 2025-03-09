@@ -2,11 +2,15 @@ package com.itgirls.bank_system.mapper;
 
 import com.itgirls.bank_system.dto.AccountDto;
 import com.itgirls.bank_system.dto.DepositDto;
+import com.itgirls.bank_system.dto.TransactionDto;
 import com.itgirls.bank_system.dto.UserDto;
 import com.itgirls.bank_system.model.Account;
 import com.itgirls.bank_system.model.Deposit;
+import com.itgirls.bank_system.model.Transactions;
 import com.itgirls.bank_system.model.User;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Slf4j
 public class EntityToDtoMapper {
@@ -40,5 +44,23 @@ public class EntityToDtoMapper {
                 .id(account.getId())
                 .accountNumber(account.getAccountNumber())
                 .build();
+    }
+    public  static TransactionDto convertTransactionToDto(Transactions transaction) {
+        return TransactionDto.builder()
+                .id(transaction.getId())
+                .transactionNumber(transaction.getTransactionNumber())
+                .transactionType(transaction.getTransactionType().name())
+                .transactionAmount(transaction.getTransactionAmount())
+                .transactionTime(transaction.getTransactionTime())
+                .senderAccountId(transaction.getSenderAccount().getId())
+                .beneficiaryAccountId(transaction.getBeneficiaryAccount().getId())
+                .bankUserId(transaction.getBankUser().getId())
+                .build();
+    }
+
+    public static  List<TransactionDto> convertTransactionToDto(List<Transactions> transactions) {
+        return transactions.stream()
+                .map(EntityToDtoMapper::convertTransactionToDto)
+                .toList();
     }
 }
