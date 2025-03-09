@@ -1,10 +1,9 @@
 package com.itgirls.bank_system.service;
 
 import com.itgirls.bank_system.dto.*;
+import com.itgirls.bank_system.mapper.EntityToDtoMapper;
 import com.itgirls.bank_system.model.*;
 import com.itgirls.bank_system.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,11 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +25,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addNewUser(UserCreateDto userCreateDto) {
-        log.info("Создание нового пользователя");
-        if (userRepository.existsByEmail(userCreateDto.getEmail())) {
+ log.info("Создание нового пользователя");
+       if (userRepository.existsByEmail(userCreateDto.getEmail())) {
             log.error("Пользователь с адресом {} уже зарегистрирован", userCreateDto.getEmail());
             throw new RuntimeException("Пользователь с таким email уже зарегисрирован");
         }
-        try {
+        try {      
             String passwordEncode = passwordEncoder.encode(userCreateDto.getPassword());
             User user = new User();
             user.setName(userCreateDto.getName());
@@ -44,7 +40,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncode);
             userRepository.save(user);
             log.info("Пользователь с email {} был создан.", user.getEmail());
-            return convertNewUserToDto(user);
+            return EntityToDtoMapper.convertNewUserToDto(user);
         } catch (DataIntegrityViolationException e) {
             log.error("Ошибка целостности данных при создании пользователя: {}", e.getMessage());
             throw new RuntimeException("Нарушение уникальности данных: " + e.getMessage(), e);
@@ -62,10 +58,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        try {
-            log.info("Поиск всех пользователей");
-            List<UserDto> allUsers = userRepository.findAll().stream().map(this::convertUserToDto).collect(Collectors.toList());
-            return allUsers;
+    log.info("Поиск всех пользователей");
+      try {
+        List<User> allUsers = userRepository.findAll();
+        List<UserDto> allUsersDto = new ArrayList<>();
+        for (User user : allUsers) {
+            allUsersDto.add(EntityToDtoMapper.convertEveryUserToDto(user));
+        }
+        return allUsersDto;
         } catch (Exception e) {
             log.error("Ошибка поиска пользователей", e.getMessage(), e);
             return Collections.emptyList();
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
             }
             userRepository.save(user);
             log.info("Новые данные о пользователе с идентификатором {} сохранены", user.getId());
-            return convertUserToDto(user);
+            return EntityToDtoMapper.convertEveryUserToDto(user);;
         } catch (EntityNotFoundException e) {
             log.error("Ошибка: {}", e.getMessage());
             throw e;
@@ -121,10 +121,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByID(Long id) {
-        try {
-            log.info("Поиск пользователя с идентификатором {}", id);
-            User foundUser = userRepository.findById(id).orElseThrow();
-            return convertUserToDto(foundUser);
+    try {
+        User foundUser = userRepository.findUserById(id);  
+        log.info("Поиск пользователя с идентификатором {}", id);
+        return EntityToDtoMapper.convertEveryUserToDto(foundUser);
         } catch (EntityNotFoundException e) {
             log.error("Ошибка: {}", e.getMessage());
             throw e;
@@ -147,78 +147,5 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ошибка при удалении пользователя");
         }
-    }
-
-    private UserDto convertNewUserToDto(User user) {
-        if (user == null) {
-            return null;
-        }
-        return UserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .name(user.getName())
-                .surname(user.getSurname())
-                .build();
-    }
-
-    private UserDto convertUserToDto(User user) {
-        if (user == null) {
-            return null;
-        }
-        return UserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .name(user.getName())
-                .surname(user.getSurname())
-                .accounts(user.getAccounts().stream().map(this::convertAccountToDto).collect(Collectors.toSet()))
-                .deposits(user.getDeposits().stream().map(this::convertDepositToDto).collect(Collectors.toSet()))
-                .loans(user.getLoans().stream().map(this::convertLoanToDto).collect(Collectors.toSet()))
-                .transactions(user.getTransactions().stream().map(this::convertTransactionToDto).collect(Collectors.toSet()))
-                .build();
-    }
-
-
-    private AccountDto convertAccountToDto(Account account) {
-        AccountDto accountDto = AccountDto.builder()
-                .id(account.getId())
-                .accountNumber(account.getAccountNumber())
-                .type(account.getType().name())
-                .build();
-        return accountDto;
-    }
-
-    private DepositDto convertDepositToDto(Deposit deposit) {
-        return DepositDto.builder()
-                .id(deposit.getId())
-                .statusDeposit(deposit.getStatusDeposit().name())
-                .interestRateDeposit(deposit.getInterestRateDeposit())
-                .startDateDeposit(deposit.getStartDateDeposit())
-                .endDateDeposit(deposit.getEndDateDeposit())
-                .build();
-    }
-
-    private LoanDto convertLoanToDto(Loan loan) {
-        return LoanDto.builder()
-                .id(loan.getId())
-                .statusLoan(loan.getStatusLoan().name())
-                .amountLoan((loan.getAmountLoan()))
-                .monthlyPayment(loan.getMonthlyPayment())
-                .startDateLoan(loan.getStartDateLoan())
-                .endDateLoan(loan.getEndDateLoan())
-                .build();
-    }
-
-    private TransactionDto convertTransactionToDto(Transactions transactions) {
-        return TransactionDto.builder()
-                .id(transactions.getId())
-                .transactionNumber(transactions.getTransactionNumber())
-                .transactionType(transactions.getTransactionType().name())
-                .transactionAmount(transactions.getTransactionAmount())
-                .transactionTime(transactions.getTransactionTime())
-                .senderAccountId(transactions.getSenderAccount().getId())
-                .beneficiaryAccountId(transactions.getBeneficiaryAccount().getId())
-                .build();
     }
 }
