@@ -7,6 +7,7 @@ import com.itgirls.bank_system.model.User;
 import com.itgirls.bank_system.repository.AccountRepository;
 import com.itgirls.bank_system.repository.UserRepository;
 import com.itgirls.bank_system.specification.AccountSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -169,12 +170,11 @@ public class AccountServiceImpl implements AccountService {
         log.info("Счет с ID: {} удален", id);
     }
 
-    @Transactional
     @Override
     public AccountDto getAccountById(Long id) {
         log.info("Получение счета с ID: {}", id);
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Счет с таким ID не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Счет с таким ID не найден"));
         return modelMapper.map(account, AccountDto.class);
     }
 
