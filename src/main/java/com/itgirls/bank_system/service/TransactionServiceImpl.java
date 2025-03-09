@@ -8,6 +8,7 @@ import com.itgirls.bank_system.model.User;
 import com.itgirls.bank_system.repository.TransactionRepository;
 import com.itgirls.bank_system.repository.UserRepository;
 import com.itgirls.bank_system.repository.AccountRepository;
+import com.itgirls.bank_system.mapper.EntityToDtoMapper;
 import java.time.LocalDateTime;
 
 import com.itgirls.bank_system.specification.TransactionSpecification;
@@ -16,10 +17,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -70,7 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.save(beneficiary);
         log.info("Обновили баланс счета получателя");
 
-        return convertTransactionToDto(savedTransaction);
+        return EntityToDtoMapper.convertTransactionToDto(savedTransaction);
     }
 
     @Override
@@ -78,7 +83,7 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transactions> transactions = transactionRepository.findAll();
         log.info("Нашли {} транзакций", transactions.size());
 
-        return convertTransactionToDto(transactions);
+        return EntityToDtoMapper.convertTransactionToDto(transactions);
     }
 
     @Override
@@ -90,7 +95,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
         log.info("Нашли {} транзакций для пользователя с id: {}", transactions.size(), userId);
 
-        return convertTransactionToDto(transactions);
+        return EntityToDtoMapper.convertTransactionToDto(transactions);
     }
 
     @Transactional
@@ -128,56 +133,59 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.save(account);
         log.info("Обновили баланс счета с id: {}", account.getId());
 
-        return convertTransactionToDto(transaction);
+        return EntityToDtoMapper.convertTransactionToDto(transaction);
     }
 
-    public String deleteTransaction(Long id) {
+    public String deleteTransaction(Long id) throws NoSuchElementException {
         try {
             transactionRepository.deleteById(id);
             log.info("Транзакция с id {} успешно удалена", id);
             return "Транзакция с id " + id + " успешно удалена";
         } catch (Exception e) {
             log.error("Ошибка при удалении транзакции с id {}: {}", id, e.getMessage());
-            return "Транзакция с id " + id + " не может быть удалена изза ошибки";
+            throw new NoSuchElementException("Ошибка при удалении транзакции с id :" + id);
         }
-    }
-
-    private TransactionDto convertTransactionToDto(Transactions transaction) {
-        return TransactionDto.builder()
-                .id(transaction.getId())
-                .transactionNumber(transaction.getTransactionNumber())
-                .transactionType(transaction.getTransactionType().name())
-                .transactionAmount(transaction.getTransactionAmount())
-                .transactionTime(transaction.getTransactionTime())
-                .senderAccountId(transaction.getSenderAccount().getId())
-                .beneficiaryAccountId(transaction.getBeneficiaryAccount().getId())
-                .bankUserId(transaction.getBankUser().getId())
-                .build();
-    }
-
-    public List<TransactionDto> convertTransactionToDto(List<Transactions> transactions) {
-        return transactions.stream()
-                .map(this::convertTransactionToDto)
-                .toList();
     }
 
     public List<Transactions> getTransactionByTypeOrSenderOrBeneficiary(String type, Long senderAccountId,
                                                                         Long beneficiaryAccountId) {
         Specification<Transactions> specification = Specification.where(null);
         log.info("Фильтрация: type={}, senderAccountId={}, beneficiaryAccountId={}", type, senderAccountId, beneficiaryAccountId);
+
         if (StringUtils.isNotEmpty(type)) {
-            specification = specification.and(TransactionSpecification.hasType(type));
+            try {
+                type = type.toUpperCase();
+                TransactionType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                log.error("Ошибка: Некорректный тип транзакции: {}", type);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Некорректный тип транзакции. Разрешены INCOMING или OUTGOING");
+            }
         }
+
+        specification = specification.and(TransactionSpecification.hasType(type));
+
         if (senderAccountId != null) {
+            if (!transactionRepository.existsById(senderAccountId)) {
+                log.error("Ошибка: отправитель с указанным id не найден");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Отправитель с указанным id в бд не найден ");
+            }
+
             specification = specification.and(TransactionSpecification.hasSenderId(senderAccountId));
         }
         if (beneficiaryAccountId != null) {
+            if (!transactionRepository.existsById(beneficiaryAccountId)) {
+                log.error("Ошибка: получатель с указанным id не найден");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Получатель с указанным id в бд не найден ");
+            }
+
             specification = specification.and(TransactionSpecification.hasBeneficiaryId(beneficiaryAccountId));
         }
-        List<Transactions> transactions =transactionRepository.findAll(specification);
-                log.info("После фильтрации найдено {} транзакций", transactions.size());
+        List<Transactions> transactions = transactionRepository.findAll(specification);
+        log.info("После фильтрации найдено {} транзакций", transactions.size());
         return transactions;
     }
 }
-
 
