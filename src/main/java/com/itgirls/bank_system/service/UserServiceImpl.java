@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -26,12 +25,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addNewUser(UserCreateDto userCreateDto) {
-        log.info("Создание нового пользователя");
-        if (userRepository.existsByEmail(userCreateDto.getEmail())) {
+ log.info("Создание нового пользователя");
+       if (userRepository.existsByEmail(userCreateDto.getEmail())) {
             log.error("Пользователь с адресом {} уже зарегистрирован", userCreateDto.getEmail());
             throw new RuntimeException("Пользователь с таким email уже зарегисрирован");
         }
-        try {
+        try {      
             String passwordEncode = passwordEncoder.encode(userCreateDto.getPassword());
             User user = new User();
             user.setName(userCreateDto.getName());

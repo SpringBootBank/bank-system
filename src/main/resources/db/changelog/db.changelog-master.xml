@@ -12,6 +12,7 @@
     <include file="/db/changelog/changes/create_table_account.xml"/>
     <include file="/db/changelog/changes/create_table_deposit.xml"/>
     <include file="db/changelog/changes/filling_table_deposit.xml"/>
+    <include file="db/changelog/changes/deposit_add_unique_constraint_to_account_07.03.2025.xml"/>
     <include file="/db/changelog/changes/create_table_loan.xml"/>
     <include file="/db/changelog/changes/filling_table_loan.xml"/>
     <include file="/db/changelog/changes/create_table_transactions.xml"/>
