@@ -1,5 +1,6 @@
 package com.itgirls.bank_system.repository;
 
+import com.itgirls.bank_system.enums.AccountType;
 import com.itgirls.bank_system.model.Account;
 import com.itgirls.bank_system.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,7 @@ public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpec
     List<Account> findByAccountNumber(String accountNumber);
 
     List<Account> findByUser(User user);
+
+    List<Account> findByType(AccountType accountType);
 }
 

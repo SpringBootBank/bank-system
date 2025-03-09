@@ -11,8 +11,6 @@ public interface AccountService {
 
     List<AccountDto> getFilteredAccounts(String accountNumber, BigDecimal minBalance, BigDecimal maxBalance, String accountType);
 
-    ;
-
     AccountDto updateAccount(Long id, AccountDto accountDto);
 
     void deleteAccount(Long id);
@@ -21,7 +19,7 @@ public interface AccountService {
 
     List<AccountDto> getAccountsByUserId(Long userId);
 
-    ;
+    AccountDto createAccountForUser(Long userId, AccountDto accountDto);
 }
 
 
