@@ -35,6 +35,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/transactions/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/transactions/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/accounts").hasAnyRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/accounts/{id}").hasAnyRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.PUT, "/accounts/{id}").hasAnyRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/accounts").hasAnyRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/accounts/{id}").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/deposits").hasRole(Role.ADMIN.name())

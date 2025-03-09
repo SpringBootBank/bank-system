@@ -65,6 +65,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private void validateAccountType(String accountType) {
+        if (accountType == null || accountType.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Тип счета не может быть пустым");
+        }
+
         try {
             AccountType.valueOf(accountType.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -99,9 +103,8 @@ public class AccountServiceImpl implements AccountService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Минимальный баланс не может быть больше максимального");
         }
 
-        if (accountType != null && !accountType.matches(accountType)) {
-            log.error("Неверный тип счета: {}", accountType);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип счета");
+        if (accountType != null) {
+            validateAccountType(accountType);
         }
 
         Specification<Account> spec = new AccountSpecification(accountNumber, minBalance, maxBalance, accountType);
@@ -186,13 +189,47 @@ public class AccountServiceImpl implements AccountService {
         List<Account> accounts = accountRepository.findByUser(user);
 
         if (accounts.isEmpty()) {
-            log.warn("Не найдено счетов для пользователя с ID: {}", userId);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Не найдено счетов для пользователя с таким ID");
+            log.warn("Не найдено счета(ов) для пользователя с ID: {}", userId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Не найдено счета(ов) для пользователя с таким ID");
         }
 
         return accounts.stream()
                 .map(account -> modelMapper.map(account, AccountDto.class))
                 .collect(Collectors.toList());
     }
-}
 
+    @Override
+    public AccountDto createAccountForUser(Long userId, AccountDto accountDto) {
+        log.info("Создание счета для пользователя с ID: {}", userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с таким ID не найден"));
+
+        if (accountDto.getAccountNumber() == null || !accountDto.getAccountNumber().matches("\\d{16}")) {
+            log.error("Неверный формат номера счета: {}", accountDto.getAccountNumber());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Номер счета должен содержать 16 цифр");
+        }
+
+        if (accountDto.getBalance() == null || accountDto.getBalance().compareTo(BigDecimal.ZERO) <= 0) {
+            log.error("Неверный баланс счета: {}", accountDto.getBalance());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Баланс счета должен быть положительным числом");
+        }
+
+        if (!accountRepository.findByAccountNumber(accountDto.getAccountNumber()).isEmpty()) {
+            log.error("Счет с таким номером уже существует: {}", accountDto.getAccountNumber());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Счет с таким номером уже существует");
+        }
+
+        if (accountDto.getType() != null) {
+            validateAccountType(accountDto.getType());
+        }
+
+        Account account = modelMapper.map(accountDto, Account.class);
+        account.setUser(user);
+        account.setType(AccountType.valueOf(accountDto.getType().toUpperCase()));
+        account = accountRepository.save(account);
+
+        log.info("Создан новый счет с ID: {}", account.getId());
+        return modelMapper.map(account, AccountDto.class);
+    }
+}

@@ -39,7 +39,7 @@ public class AccountSpecification implements Specification<Account> {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("balance"), maxBalance));
         }
         if (accountType != null) {
-            predicates.add(criteriaBuilder.equal(root.get("accountType"), AccountType.valueOf(accountType.toUpperCase())));
+            predicates.add(criteriaBuilder.equal(root.get("type"), AccountType.valueOf(accountType.toUpperCase())));
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
