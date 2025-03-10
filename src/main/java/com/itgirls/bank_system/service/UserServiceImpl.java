@@ -4,16 +4,16 @@ import com.itgirls.bank_system.dto.*;
 import com.itgirls.bank_system.mapper.EntityToDtoMapper;
 import com.itgirls.bank_system.model.*;
 import com.itgirls.bank_system.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -58,14 +58,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-    log.info("Поиск всех пользователей");
-      try {
-        List<User> allUsers = userRepository.findAll();
-        List<UserDto> allUsersDto = new ArrayList<>();
-        for (User user : allUsers) {
-            allUsersDto.add(EntityToDtoMapper.convertEveryUserToDto(user));
-        }
-        return allUsersDto;
+        log.info("Поиск всех пользователей");
+        try {
+            List<User> allUsers = userRepository.findAll();
+            List<UserDto> allUsersDto = new ArrayList<>();
+            for (User user : allUsers) {
+                allUsersDto.add(EntityToDtoMapper.convertEveryUserToDto(user));
+            }
+            return allUsersDto;
         } catch (Exception e) {
             log.error("Ошибка поиска пользователей", e.getMessage(), e);
             return Collections.emptyList();
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
             }
             userRepository.save(user);
             log.info("Новые данные о пользователе с идентификатором {} сохранены", user.getId());
-            return EntityToDtoMapper.convertEveryUserToDto(user);;
+            return EntityToDtoMapper.convertEveryUserToDto(user);
         } catch (EntityNotFoundException e) {
             log.error("Ошибка: {}", e.getMessage());
             throw e;
@@ -121,10 +121,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByID(Long id) {
-    try {
-        User foundUser = userRepository.findUserById(id);  
-        log.info("Поиск пользователя с идентификатором {}", id);
-        return EntityToDtoMapper.convertEveryUserToDto(foundUser);
+        try {
+            Optional<User> foundUser = userRepository.findById(id);
+            log.info("Поиск пользователя с идентификатором {}", id);
+            return EntityToDtoMapper.convertEveryUserToDto(foundUser.get());
         } catch (EntityNotFoundException e) {
             log.error("Ошибка: {}", e.getMessage());
             throw e;
