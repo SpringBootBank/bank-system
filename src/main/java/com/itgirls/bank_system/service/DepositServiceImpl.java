@@ -208,7 +208,7 @@ public class DepositServiceImpl implements DepositService {
 
             if (depositsBeforeDelete == depositsAfterDelete) {
                 log.error("Не удалось удалить вклад с ID {} из БД.", id);
-                return "Не удалось удалить вклад с ID " + id + " из БД.";
+                throw new RuntimeException("Не удалось удалить вклад с ID " + id + " из БД.");
             } else {
                 log.info("Вклад с ID {} успешно удален.", id);
                 return "Вклад с ID " + id + " был удален.";

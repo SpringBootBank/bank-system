@@ -122,7 +122,7 @@ public class DepositController {
     public ResponseEntity <String> deleteDeposit(@PathVariable long id, Authentication authentication) {
         try {
             return ResponseEntity.ok().body(depositService.deleteDeposit(id, authentication));
-        } catch (Exception e) {
+        } catch (RuntimeException | DepositNotFoundException | UserNotFoundException e) {
             log.error("Не удалось удалить вклад по ID: {}", id, e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
