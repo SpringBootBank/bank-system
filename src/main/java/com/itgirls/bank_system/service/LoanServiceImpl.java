@@ -66,10 +66,10 @@ public class LoanServiceImpl implements LoanService {
         };
         List<Loan> loans = loanRepository.findAll(specification);
         if (loans.isEmpty()) {
-            log.warn("Кредиты со статусом {} и клиентом {} не найдены.", statusLoan, userId);
+            log.warn("У клиента {} нет кредитов со статусом {}.", userId, statusLoan);
             return Collections.emptyList();
         }
-        log.info("Кредиты со статусом {} и клиентом {} найдены.", statusLoan, userId);
+        log.info("Кредиты со статусом {} у клиента {} найдены.", statusLoan, userId);
         return loans.stream()
                 .map(EntityToDtoMapper::convertLoanEntityToDto)
                 .toList();
@@ -94,7 +94,7 @@ public class LoanServiceImpl implements LoanService {
         return loanDto;
     }
 
-    private Loan convertLoanDtoToEntity(LoanDto loanDto) {
+    protected Loan convertLoanDtoToEntity(LoanDto loanDto) {
         Account account = accountRepository.findById(loanDto.getAccountId())
                 .orElseThrow(() -> new NoSuchElementException("Счет с id " + loanDto.getAccountId() + " не найден."));
         User user = userRepository.findById(loanDto.getUserId())
