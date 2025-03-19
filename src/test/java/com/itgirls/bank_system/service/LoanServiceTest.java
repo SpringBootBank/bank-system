@@ -67,7 +67,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testGetLoanByIdFailed() {
+    public void testGetLoanByIdWhenIdNotFound() {
         Long id = 777L;
 
         when(loanRepository.findById(id)).thenReturn(Optional.empty());
@@ -77,7 +77,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testGetLoansByStatusAndUserIDSuccessfully() {
+    public void testGetLoansByStatusAndUserIdSuccessfully() {
         User user = new User();
         user.setId(10L);
         Account account = new Account();
@@ -132,7 +132,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testGetLoansByStatusAndUserIDEmptyList() {
+    public void testGetLoansByStatusAndUserIdEmptyList() {
         User user = new User();
         user.setId(10L);
         String statusLoan = "ACTIVE";
@@ -148,9 +148,9 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testGetLoansByStatusAndUserIDWrongStatus() {
+    public void testGetLoansByStatusAndUserIdWhenWrongStatus() {
         Long userId = 10L;
-        String loanStatus = "MISSING";
+        String loanStatus = "WRONG";
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> loanService.getLoansByStatusAndUserID(loanStatus, userId));
         verifyNoInteractions(userRepository);
@@ -158,7 +158,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testGetLoansByStatusAndUserIDUserNotFound() {
+    public void testGetLoansByStatusAndUserIdWhenUserNotFound() {
         Long userId = 777L;
         String statusLoan = "ACTIVE";
 
@@ -281,7 +281,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testConvertLoanDtoToEntityAccountNotFound() {
+    public void testConvertLoanDtoToEntityWhenAccountNotFound() {
         Long accountId = 1L;
         Long userId = 10L;
         LoanDto loanDto = new LoanDto();
@@ -298,7 +298,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testConvertLoanDtoToEntityUserNotFound() {
+    public void testConvertLoanDtoToEntityWhenUserNotFound() {
         Long accountId = 1L;
         Long userId = 10L;
         LoanDto loanDto = new LoanDto();
@@ -318,7 +318,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testConvertLoanDtoToEntityAccountBelongsToAnotherUser() {
+    public void testConvertLoanDtoToEntityWhenAccountBelongsToAnotherUser() {
         Long accountId = 1L;
         Long userId = 10L;
         LoanDto loanDto = new LoanDto();
@@ -516,7 +516,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testUpdateLoanAccountBelongsToAnotherUser() {
+    public void testUpdateLoanWhenAccountBelongsToAnotherUser() {
         Long id = 1L;
         Long accountId = 10L;
         Long userId = 10L;
@@ -560,7 +560,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void testDeleteLoanFailed() {
+    public void testDeleteLoanWhenIdNotFound() {
         Long id = 1L;
 
         when(loanRepository.existsById(id)).thenReturn(false);
