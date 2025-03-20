@@ -1,8 +1,6 @@
 package com.itgirls.bank_system.service;
 
 import com.itgirls.bank_system.dto.LoanDto;
-import com.itgirls.bank_system.exception.UserNotFoundException;
-import liquibase.exception.DatabaseException;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
